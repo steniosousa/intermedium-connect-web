@@ -9,11 +9,13 @@ export default function Home() {
     const { id } = useParams(); 
     const [users, setUsers] = useState([])
     const[userSelected,setUserSelected] = useState(null)
+    const[admin,setAdmin] = useState({companys: {id: "0000",name:  "Admin"},name:"Admin"})
     
     async function getDatas(){
-        try{
+      try{
             const {data} = await Api.get('manager/users',{params:{id}})
             setUsers(data.users)
+            setAdmin(data)
 
         }catch(error){
             console.log(error)
@@ -24,6 +26,8 @@ export default function Home() {
     function handleUserClick (user){
         setUserSelected(user)
     }
+
+    
     
     useEffect(() =>{getDatas()},[])
   return (
@@ -73,14 +77,14 @@ export default function Home() {
           <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center">Currency Exchange</a>
         </div>
         <div className="ml-auto flex items-center space-x-7">
-          <button className="h-8 px-3 rounded-md shadow text-white bg-blue-500">Deposit</button>
+          <button className="h-8 px-3 rounded-md shadow text-white bg-blue-500">{admin.companys.name}</button>
   
           <button className="flex items-center">
             <span className="relative flex-shrink-0">
               <img className="w-7 h-7 rounded-full" src="https://images.unsplash.com/photo-1521587765099-8835e7201186?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ" alt="profile" />
               <span className="absolute right-0 -mb-0.5 bottom-0 w-2 h-2 rounded-full bg-green-500 border border-white dark:border-gray-900"></span>
             </span>
-            <span className="ml-2">James Smith</span>
+            <span className="ml-2">{admin.name}</span>
             <svg viewBox="0 0 24 24" className="w-4 ml-1 flex-shrink-0" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -108,7 +112,7 @@ export default function Home() {
           </div>
         </div>
         {userSelected?(
-            <Center user={userSelected}/>
+            <Center user={userSelected} recarregar={getDatas}/>
 
         ):null}
       </div>
