@@ -3,19 +3,26 @@ import Api from "../../api/service";
 import { useEffect, useState } from "react";
 import { User } from "../../components/user";
 import { Center } from "../../components/center";
+import Object from "../../components/object";
 
 
 export default function Home() {
     const { id } = useParams(); 
+    
     const [users, setUsers] = useState([])
+    const [userWithFilter,setUserWithFilter] = useState([])
     const[userSelected,setUserSelected] = useState(null)
     const[admin,setAdmin] = useState({companys: {id: "0000",name:  "Admin"},name:"Admin"})
+    const[filterUser, setFilterUser] = useState('')
+
+    const [objectModal, setObjectModal] = useState(false)
     
     async function getDatas(){
       try{
             const {data} = await Api.get('manager/users',{params:{id}})
             setUsers(data.users)
             setAdmin(data)
+            setUserWithFilter(data.users)
 
         }catch(error){
             console.log(error)
@@ -27,9 +34,26 @@ export default function Home() {
         setUserSelected(user)
     }
 
+    function handleObject(){
+      setObjectModal(!objectModal)
+    }
+
+
+    useEffect(() =>{
+      const filteredUsers = users.filter((item) =>
+      item.name.toLowerCase().includes(filterUser.toLowerCase())
+    );
+    if(filteredUsers){
+      setUserWithFilter(filteredUsers)
+
+    }else{
+      setUserWithFilter(users)
+    }
+    },[filterUser])
     
     
     useEffect(() =>{getDatas()},[])
+
   return (
     <div className="bg-gray-100 dark:bg-gray-900 dark:text-white text-gray-600 h-screen flex overflow-hidden text-sm">
     <div className="bg-white dark:bg-gray-900 dark:border-gray-800 w-20 flex-shrink-0 border-r border-gray-200 flex-col hidden sm:flex">
@@ -71,11 +95,13 @@ export default function Home() {
     <div className="flex-grow overflow-hidden h-full flex flex-col">
       <div className="h-16 lg:flex w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
         <div className="flex h-full text-gray-600 dark:text-gray-400">
-          <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Company</a>
-          <a href="#" className="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Users</a>
-          <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Expense Centres</a>
-          <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center">Currency Exchange</a>
+          <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Intermedium</a>
+          <a href="#" className="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Usuário</a>
+          <a href="#" onClick={handleObject} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Objetos</a>
+          {/* <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center">Ambientes</a> */}
         </div>
+        {objectModal &&  <Object datas={admin} onClose={handleObject} showModal={objectModal} />}
+       
         <div className="ml-auto flex items-center space-x-7">
           <button className="h-8 px-3 rounded-md shadow text-white bg-blue-500">{admin.companys.name}</button>
   
@@ -95,14 +121,15 @@ export default function Home() {
         <div className="xl:w-72 w-48 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 h-full overflow-y-auto lg:block hidden p-5">
           <div className="text-xs text-gray-400 tracking-wider">USERS</div>
           <div className="relative mt-2">
-            <input type="text" className="pl-8 h-9 bg-transparent border border-gray-300 dark:border-gray-700 dark:text-white w-full rounded-md text-sm" placeholder="Search" />
+            <input onChange={(e)=>setFilterUser(e.target.value)} type="text" className="pl-8 h-9 bg-transparent border border-gray-300 dark:border-gray-700 dark:text-white w-full rounded-md text-sm" placeholder="Search" />
             <svg viewBox="0 0 24 24" className="w-4 absolute text-gray-400 top-1/2 transform translate-x-0.5 -translate-y-1/2 left-2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </div>
+
           <div className="space-y-4 mt-3">
-            {users.map((user) =>{
+            {userWithFilter && userWithFilter.map((user) =>{
                 return(
                     <button key={user.id} onClick={() => handleUserClick(user)}>
                         <User active={user.active} hash={user.loginHash} name={user.name} />
