@@ -3,10 +3,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import Alert from '../alert';
 
-export default function Object({ showModal, onClose,datas }) {
+export default function Admin({ showModal, onClose,datas }) {
   const [selectedEnvironment, setSelectedEnvironment] = useState('');
- 
-
+  const[selectedCompany, setSelectedCompany] = useState('')
+  const[allCompanys, setAllCompanys] = useState([])
     const[showAlert, setShowAlert] = useState(false)
     const[messengerAlert, setMessengerAlert] = useState('')
 
@@ -14,32 +14,54 @@ export default function Object({ showModal, onClose,datas }) {
 
   const cancelButtonRef = useRef(null);
 
+  
 
+  async function getDatas(){
+    try{
+      const {data} = await Api.get('company/all')
+      console.log(data)
+      setAllCompanys(data)
+    }
+    catch(error){
+      console.log(error)
+      setShowAlert(true)
+      setMessengerAlert('Não foi possível recuperar as empresas registradas')
+    }
+  }
+
+  useEffect(() =>{
+    getDatas()
+  },[])
 
  
   const handleEnvironmentChange = (event) => {
     setSelectedEnvironment(event.target.value);
   };
+
+  const handleCompanyChancge = (event) => {
+    setSelectedCompany(event.target.value);
+  };
   
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(selectedEnvironment == ''){
+    if(selectedEnvironment === ''){
       setShowAlert(true)
       setMessengerAlert('Informe o nome do novo objeto')
     }
     const send = {
-        companyId:datas.companyId,
-        name:selectedEnvironment
+      companyId:selectedCompany,
+      name:selectedEnvironment,
+      password:"Intermedium"
     }
     try{
-        Api.post('object',send)
-        setMessengerAlert('Objeto cadastrada com sucesso')
+        Api.post('manager',send)
+        setMessengerAlert('Administrador cadastrado com sucesso, acesso: nome: ' + send.name + 'senha: ' + send.password)
         setShowAlert(true)
     }
     catch(error){
         console.log(error)
         setShowAlert(true)
-        setMessengerAlert('Erro ao gravar objeto, verifique os dados enviados')
+        setMessengerAlert('Erro ao gravar administrador, verifique os dados enviados')
     }
    
   };
@@ -90,7 +112,7 @@ export default function Object({ showModal, onClose,datas }) {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="environment" className="block text-gray-700 font-semibold mb-1">
-                        Nome do objeto:
+                        Nome do administrador:
                         </label>
                         <input
                         type="text"
@@ -102,6 +124,17 @@ export default function Object({ showModal, onClose,datas }) {
                         required
                         />
                     </div>
+                    <select className="border rounded-md px-3 py-2 w-full" onChange={handleCompanyChancge}>
+                        <option value="" disabled>
+                            Selecione uma opção
+                        </option>
+                        {allCompanys && allCompanys.map((item) =>{
+                            return(
+                                <option key={item.id} value={item.id}>{item.name}</option>
+
+                            )
+                        })}
+                        </select>
                    
                     <button
                         type="submit"

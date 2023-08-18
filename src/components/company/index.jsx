@@ -3,15 +3,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import Alert from '../alert';
 
-export default function Object({ showModal, onClose,datas }) {
+export default function Company({ showModal, onClose,datas }) {
   const [selectedEnvironment, setSelectedEnvironment] = useState('');
- 
-
-    const[showAlert, setShowAlert] = useState(false)
-    const[messengerAlert, setMessengerAlert] = useState('')
-
-
-
+  const[showAlert, setShowAlert] = useState(false)
+  const[messengerAlert, setMessengerAlert] = useState('')
   const cancelButtonRef = useRef(null);
 
 
@@ -25,21 +20,20 @@ export default function Object({ showModal, onClose,datas }) {
     event.preventDefault();
     if(selectedEnvironment == ''){
       setShowAlert(true)
-      setMessengerAlert('Informe o nome do novo objeto')
+      setMessengerAlert('Informe o nome da nova empresa')
     }
     const send = {
-        companyId:datas.companyId,
         name:selectedEnvironment
     }
     try{
-        Api.post('object',send)
-        setMessengerAlert('Objeto cadastrada com sucesso')
+        Api.post('company',send)
+        setMessengerAlert('Empresa cadastrada com sucesso')
         setShowAlert(true)
     }
     catch(error){
         console.log(error)
         setShowAlert(true)
-        setMessengerAlert('Erro ao gravar objeto, verifique os dados enviados')
+        setMessengerAlert('Erro ao gravar empresa, verifique os dados enviados')
     }
    
   };
@@ -90,7 +84,7 @@ export default function Object({ showModal, onClose,datas }) {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="environment" className="block text-gray-700 font-semibold mb-1">
-                        Nome do objeto:
+                        Nome do nova empresa:
                         </label>
                         <input
                         type="text"

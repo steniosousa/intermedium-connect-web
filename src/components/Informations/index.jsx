@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useRef } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import Api from '../../api/service';
 
-export default function Informations({ showModal, onClose,datas,managerId }) {
+export default function Informations({ showModal, onClose,datas }) {
   const cancelButtonRef = useRef(null);
 
   const handleClose = () => {

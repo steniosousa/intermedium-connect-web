@@ -1,29 +1,22 @@
 import { format } from "date-fns";
 import { useState } from "react";
 import Informations from "../Informations";
-import Api from "../../api/service";
 
 export default function Line({clean,managerId,reload}){
-    const [allEvidence,setAllEvidence] = useState(0)
+    const [allEvidence,setAllEvidence] = useState(2)
     const [showModal, setShowModal] = useState(false);
-    if(clean.entrance != ''){
-        setAllEvidence(allEvidence+1)
-    }
-
-    if(clean.exit != ''){
-        setAllEvidence(allEvidence+1)
-    }
+    
 
     const startDate = format(new Date(clean.createAt), 'dd/MM/yyyy HH:mm');
     const finishDate = format(new Date(clean.updateAt), 'dd/MM/yyyy HH:mm');
 
-    const handleToggleModal = async () => {
+    async function handleToggleModal() {
       reload()
       setShowModal(!showModal);
       
     };
     return(
-      <tr onClick={handleToggleModal} className="cursor-pointer">
+      <tr onClick={() => handleToggleModal()} className="cursor-pointer">
         {showModal && <Informations onClose={handleToggleModal}  showModal={showModal} datas={clean} managerId={managerId}/>}
         <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center">
@@ -37,7 +30,7 @@ export default function Line({clean,managerId,reload}){
             {clean.where}
           </div>
         </td>
-        {clean.status == "Pendente"?(
+        {clean.status === "Pendente"?(
             <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800 md:table-cell hidden text-orange-500">{clean.status}</td>
 
         ):(

@@ -3,7 +3,7 @@ import Line from "../line"
 import Solicitation from "../solicitation";
 import Api from "../../api/service";
 
-export function Center({user,recarregar}){
+export function Center({user}){
   const [showSolicitation, setShowSolicitation] = useState(false);
   const [ allDatas, setAllDatas] = useState(null)
   const[copy,setCopy] =useState('Copiar')
@@ -29,6 +29,7 @@ export function Center({user,recarregar}){
       const filter = data.users.find((item) => user.id == item.id)
      
       setAllDatas(filter)
+      console.log(allDatas.Cleaning)
      
     }catch(error){
       window.alert('erro')
