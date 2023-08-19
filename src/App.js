@@ -4,7 +4,7 @@ import Login from './views/Login';
 import Home from './views/home';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <Router>

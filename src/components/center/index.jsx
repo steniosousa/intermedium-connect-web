@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import Line from "../line"
 import Solicitation from "../solicitation";
 import Api from "../../api/service";
+import Alert from "../alert";
 
 export function Center({user}){
   const [showSolicitation, setShowSolicitation] = useState(false);
   const [ allDatas, setAllDatas] = useState(null)
   const[copy,setCopy] =useState('Copiar')
+  const [loading, setLoading] = useState(false)
+
   function handleSolicitation(){
     getDatas()
     setShowSolicitation(!showSolicitation);
@@ -23,22 +26,29 @@ export function Center({user}){
   }
   }
 
+  function closeAlert(){
+    setLoading(false)
+  }
+
   async function getDatas(){
+    setLoading(true)
     try{
       const {data} = await Api.get('manager/users',{params:{id:user.managerId}})
       const filter = data.users.find((item) => user.id == item.id)
      
       setAllDatas(filter)
-      console.log(allDatas.Cleaning)
-     
+      setLoading(false)
     }catch(error){
       window.alert('erro')
     }
   }
+
+  useEffect(() =>{getDatas()},[user])
   useEffect(() =>{setAllDatas(user)},[])
 
     return(
         <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
+          {loading && <Alert message={'Carregando'} showAlert={true} onCloseAlert={closeAlert}/>}
            {showSolicitation && <Solicitation onClose={handleSolicitation}  showModal={showSolicitation} datas={allDatas}/>}
         <div className="sm:px-7 sm:pt-7 px-4 pt-4 flex flex-col w-full border-b border-gray-200 bg-white dark:bg-gray-900 dark:text-white dark:border-gray-800 sticky top-0">
           <div className="flex w-full items-center">

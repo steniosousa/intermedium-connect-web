@@ -1,14 +1,37 @@
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Informations from "../Informations";
 
 export default function Line({clean,managerId,reload}){
-    const [allEvidence,setAllEvidence] = useState(2)
+    const [allEvidence,setAllEvidence] = useState(0)
     const [showModal, setShowModal] = useState(false);
     
 
     const startDate = format(new Date(clean.createAt), 'dd/MM/yyyy HH:mm');
     const finishDate = format(new Date(clean.updateAt), 'dd/MM/yyyy HH:mm');
+
+    function countEvidences(){
+      if(clean.entrance){
+        setAllEvidence(allEvidence + 1)
+      }
+      if(clean.exit){
+        setAllEvidence(allEvidence + 2)
+      }
+      if(clean.obs1){
+        setAllEvidence(allEvidence + 3)
+      }
+      if(clean.obs2){
+        setAllEvidence(allEvidence + 4)
+      }
+      if(clean.obs3){
+        setAllEvidence(allEvidence + 5)
+      }
+
+    }
+    useEffect(() =>{
+      
+      countEvidences()
+    },[])
 
     async function handleToggleModal() {
       reload()
