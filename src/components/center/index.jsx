@@ -20,7 +20,6 @@ export function Center({user}){
    try {
     await navigator.clipboard.writeText(copiar);
     setCopy('Copiado')
-    console.log('Texto copiado com sucesso para a área de transferência!');
   } catch (error) {
     console.error('Erro ao copiar texto para a área de transferência:', error);
   }
@@ -61,13 +60,8 @@ export function Center({user}){
                 <div className="text-xs text-gray-400 dark:text-gray-400">Chave de acesso</div>
                 <div className="text-gray-900 text-lg dark:text-white">{allDatas && allDatas.loginHash}</div>
               </div>
-              <button onClick={copyHash}className="w-8 h-8 ml-4 text-gray-400 shadow dark:text-gray-400 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700">
+              <button onClick={copyHash}className="w-12 h-12 ml-4 text-gray-400 shadow dark:text-gray-400 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700">
                 <span>{copy}</span>
-                {/* <svg viewBox="0 0 24 24" className="w-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"> */}
-                  {/* <circle cx="12" cy="12" r="1"></circle> */}
-                  {/* <circle cx="19" cy="12" r="1"></circle> */}
-                  {/* <circle cx="5" cy="12" r="1"></circle> */}
-                {/* </svg> */}
               </button>
             </div>
           </div>
@@ -76,7 +70,7 @@ export function Center({user}){
             <a href="#" className="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 line-through">Quadro de ponto</a>
             <a href="#" className="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 sm:block hidden line-through">Cronograma</a>
             <a href="#" className="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 sm:block hidden line-through">Notificações</a>
-            <a href="#" onClick={handleSolicitation} className="px-3 border-b-2 border-transparent text-white dark:text-gray-400 pb-1.5 sm:block hidden bg-blue-500 rounded-md shadow py-2 m-4">Nova solicitação</a>
+            <a href="#" onClick={handleSolicitation} className="px-3 border-b-2 border-transparent text-white  pb-1.5 sm:block hidden bg-blue-500 rounded-md shadow py-2 m-4 ">Nova solicitação</a>
           </div>
         </div>
         <div className="sm:p-7 p-4">
