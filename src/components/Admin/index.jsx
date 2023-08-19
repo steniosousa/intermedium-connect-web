@@ -19,11 +19,9 @@ export default function Admin({ showModal, onClose,datas }) {
   async function getDatas(){
     try{
       const {data} = await Api.get('company/all')
-      console.log(data)
       setAllCompanys(data)
     }
     catch(error){
-      console.log(error)
       setShowAlert(true)
       setMessengerAlert('Não foi possível recuperar as empresas registradas')
     }

@@ -78,13 +78,13 @@ export default function Informations({ showModal, onClose,datas }) {
                   )
                 })}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
-                      <img src="https://sb.kaleidousercontent.com/67418/960x550/d1e78c2a25/individuals-a.png" alt="Imagem 1" className="w-full h-auto" />
-                      <img src="https://sb.kaleidousercontent.com/67418/960x550/d1e78c2a25/individuals-a.png" alt="Imagem 2" className="w-full h-auto" />
-                      <img src="https://sb.kaleidousercontent.com/67418/960x550/d1e78c2a25/individuals-a.png" alt="Imagem 3" className="w-full h-auto" />
-                      <img src="https://sb.kaleidousercontent.com/67418/960x550/d1e78c2a25/individuals-a.png" alt="Imagem 4" className="w-full h-auto" />
-                      <img src="https://sb.kaleidousercontent.com/67418/960x550/d1e78c2a25/individuals-a.png" alt="Imagem 5" className="w-full h-auto" />
-                    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+      {datas.entrance && <img src={datas.entrance} alt="Entrada" className=" h-auto" />}
+      {datas.exit && <img src={datas.exit} alt="Saída" className="w-full h-auto" />}
+      {datas.obs1 && <img src={datas.obs1} alt="Observação 1" className="w-full h-auto" />}
+      {datas.obs2 && <img src={datas.obs2} alt="Observação 2" className="w-full h-auto" />}
+      {datas.obs3 && <img src={datas.obs3} alt="Observação 3" className="w-full h-auto" />}
+    </div>
                   </div>
                 </div>
               </div>
