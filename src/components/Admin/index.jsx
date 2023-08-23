@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import Alert from '../alert';
 
-export default function Admin({ showModal, onClose,datas }) {
+export default function Admin({ showModal, onClose }) {
   const [selectedEnvironment, setSelectedEnvironment] = useState('');
   const[selectedCompany, setSelectedCompany] = useState('')
   const[allCompanys, setAllCompanys] = useState([])
@@ -53,7 +53,7 @@ export default function Admin({ showModal, onClose,datas }) {
     }
     try{
         Api.post('manager',send)
-        setMessengerAlert('Administrador cadastrado com sucesso, acesso: nome: ' + send.name + 'senha: ' + send.password)
+        setMessengerAlert('Administrador cadastrado com sucesso, acesso: nome: ' + send.name + ' senha: ' + send.password)
         setShowAlert(true)
     }
     catch(error){
@@ -129,11 +129,9 @@ export default function Admin({ showModal, onClose,datas }) {
                         {allCompanys && allCompanys.map((item) =>{
                             return(
                                 <option key={item.id} value={item.id}>{item.name}</option>
-
                             )
                         })}
                         </select>
-                   
                     <button
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md font-semibold"

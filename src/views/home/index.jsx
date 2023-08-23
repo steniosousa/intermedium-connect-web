@@ -3,16 +3,28 @@ import Api from "../../api/service";
 import { useEffect, useState } from "react";
 import { User } from "../../components/user";
 import { Center } from "../../components/center";
-import Object from "../../components/object";
-import Company from "../../components/company";
 import Admin from "../../components/Admin";
-
+import LitleModal from "../../components/litleModal";
+import React from "react";
 
 export default function Home() {
-    const { id } = useParams(); 
-    const navigate = useNavigate(); // Use o hook useNavigate
+  const navigate = useNavigate(); // Use o hook useNavigate
+    const id = localStorage.getItem('token')
+    if(!id){
+      navigate(`/`);
+      return
+    }
     const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
-
+    const [users, setUsers] = useState([])
+    const [userWithFilter,setUserWithFilter] = useState([])
+    const[userSelected,setUserSelected] = useState(null)
+    const[admin,setAdmin] = useState({companys: {id: "0000",name:  "Admin"},name:"Admin"})
+    const[filterUser, setFilterUser] = useState('')
+    
+    const [objectModal, setObjectModal] = useState(false)
+    const[companyModal, setCompanyModal] = useState(false)
+    const[adminModal, setAdminModal] = useState(false)
+    const[placeModal, setPlaceModal] = useState(false)
     const updateWindowSize = () => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
@@ -24,15 +36,7 @@ export default function Home() {
       };
     }, []);
   
-    const [users, setUsers] = useState([])
-    const [userWithFilter,setUserWithFilter] = useState([])
-    const[userSelected,setUserSelected] = useState(null)
-    const[admin,setAdmin] = useState({companys: {id: "0000",name:  "Admin"},name:"Admin"})
-    const[filterUser, setFilterUser] = useState('')
-    
-    const [objectModal, setObjectModal] = useState(false)
-    const[companyModal, setCompanyModal] = useState(false)
-    const[adminModal, setAdminModal] = useState(false)
+   
     
     async function getDatas(){
       try{
@@ -60,6 +64,10 @@ export default function Home() {
       setAdminModal(!adminModal)
     }
 
+    function handlePlace(){
+      setPlaceModal(!placeModal)
+    }
+
 
     useEffect(() =>{
       const filteredUsers = users.filter((item) =>
@@ -75,6 +83,7 @@ export default function Home() {
     
 
     function handleLogin(){
+      localStorage.clear()
       navigate(`/`);
     }
     
@@ -137,15 +146,17 @@ export default function Home() {
   <div className="flex-grow overflow-hidden h-full flex flex-col">
     <div className="h-16 lg:flex w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
       <div className="flex h-full text-gray-600 dark:text-gray-400">
-        <a href="#" className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Intermedium</a>
-        <a href="#" className="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Usuário</a>
-        <a href="#" onClick={handleObject} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Objetos</a>
-        <a href="#" onClick={handleCompany} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Empresas</a>
-        <a href="#" onClick={handleAdmin} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Administradores</a>
+        < button className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Intermedium</button>
+        <button  className="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Usuário</button>
+        <button  onClick={handleObject} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Objetos</button>
+        <button onClick={handlePlace} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Ambientes</button>
+        <button  onClick={handleCompany} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Empresas</button>
+        <button  onClick={handleAdmin} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Administradores</button>
       </div>
-      {objectModal &&  <Object datas={admin} onClose={handleObject} showModal={objectModal} />}
-      {companyModal &&  <Company datas={admin} onClose={handleCompany} showModal={companyModal} />}
-      {adminModal &&  <Admin datas={admin} onClose={handleAdmin} showModal={adminModal} />}
+      {objectModal &&  <LitleModal companyId={admin.companyId} onClose={handleObject} showModal={objectModal}  action={'object'} text={"Informar Objeto"} />}
+      {companyModal &&  <LitleModal companyId={admin.companyId} onClose={handleCompany} showModal={companyModal}  action={'company'} text={"Informar empresa"} />}
+      {placeModal && <LitleModal companyId={admin.companyId} onClose={handlePlace} showModal={placeModal}  action={'place'} text={"Informar ambiente"} />}
+      {adminModal &&  <Admin datas={admin.companyId} onClose={handleAdmin} showModal={adminModal} />}
      
       <div className="ml-auto flex items-center space-x-7">
  
@@ -165,7 +176,11 @@ export default function Home() {
     </div>
     <div className="flex-grow flex overflow-x-hidden">
       <div className="xl:w-72 w-48 flex-shrink-0 border-r border-gray-200 dark:border-gray-800 h-full overflow-y-auto lg:block hidden p-5">
-        <div className="text-xs text-gray-400 tracking-wider">Usuários</div>
+      {users.length == 0?(
+             <div className="text-xs text-gray-400 tracking-wider">Usuários cadastrados: 0</div>
+          ):(
+            <div className="text-xs text-gray-400 tracking-wider">Usuários cadastrados: {users.length}</div>
+          )}
         <div className="relative mt-2">
           <input onChange={(e)=>setFilterUser(e.target.value)} type="text" className="pl-8 h-9 bg-transparent border border-gray-300 dark:border-gray-700 dark:text-white w-full rounded-md text-sm" placeholder="Search" />
           <svg viewBox="0 0 24 24" className="w-4 absolute text-gray-400 top-1/2 transform translate-x-0.5 -translate-y-1/2 left-2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -175,9 +190,10 @@ export default function Home() {
         </div>
  
         <div className="space-y-4 mt-3">
+          
           {userWithFilter.map((user) =>{
               return(
-                      <User active={user.active} hash={user.loginHash} name={user.name} onRedirect={setUserSelected} user={user}/>
+                      <User active={user.active} hash={user.loginHash} name={user.name} onRedirect={setUserSelected} user={user} key={user.id}/>
               )
           })}
         </div>

@@ -2,15 +2,17 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import Alert from '../alert';
-
-export default function Company({ showModal, onClose,datas }) {
+import React from 'react';
+export default function LitleModal({ showModal, onClose,action, companyId, text }) {
   const [selectedEnvironment, setSelectedEnvironment] = useState('');
-  const[showAlert, setShowAlert] = useState(false)
-  const[messengerAlert, setMessengerAlert] = useState('')
+ 
+
+    const[showAlert, setShowAlert] = useState(false)
+    const[messengerAlert, setMessengerAlert] = useState('')
+
+
+
   const cancelButtonRef = useRef(null);
-
-
-
  
   const handleEnvironmentChange = (event) => {
     setSelectedEnvironment(event.target.value);
@@ -18,22 +20,22 @@ export default function Company({ showModal, onClose,datas }) {
   
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(selectedEnvironment == ''){
+    if(selectedEnvironment === ''){
       setShowAlert(true)
-      setMessengerAlert('Informe o nome da nova empresa')
+      setMessengerAlert('Informe o nome do novo objeto')
     }
     const send = {
+        companyId:companyId,
         name:selectedEnvironment
     }
     try{
-        Api.post('company',send)
-        setMessengerAlert('Empresa cadastrada com sucesso')
+        Api.post(action,send)
+        setMessengerAlert('Objeto cadastrada com sucesso')
         setShowAlert(true)
     }
     catch(error){
-        console.log(error)
         setShowAlert(true)
-        setMessengerAlert('Erro ao gravar empresa, verifique os dados enviados')
+        setMessengerAlert('Erro na gravação, verifique os dados enviados')
     }
    
   };
@@ -84,7 +86,7 @@ export default function Company({ showModal, onClose,datas }) {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="environment" className="block text-gray-700 font-semibold mb-1">
-                        Nome do nova empresa:
+                        {text}:
                         </label>
                         <input
                         type="text"
@@ -92,7 +94,7 @@ export default function Company({ showModal, onClose,datas }) {
                         value={selectedEnvironment}
                         onChange={handleEnvironmentChange}
                         className="border rounded-md px-3 py-2 w-full"
-                        placeholder="Informe o nome do objeto"
+                        placeholder={text}
                         required
                         />
                     </div>

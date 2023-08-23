@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Api from '../../api/service';
 import Modal from '../../components/modal';
 import { useNavigate } from 'react-router-dom';
-import {logo} from '../../assets/user.png'
 function Login({ setIsLoggedIn }) {
     const [name, setName] = useState('')
     const[password,setPassword] = useState('')
-const[modal,setModal] = useState(false)
-const navigate = useNavigate(); // Use o hook useNavigate
+    const[modal,setModal] = useState(false)
+    const navigate = useNavigate(); 
+    const acess = localStorage.getItem('token')
 
+
+    
     async function handleSingIn(e){
         e.preventDefault()
-
         try{
             const { data } = await Api.get('manager/', {
                 params: {
@@ -19,6 +20,7 @@ const navigate = useNavigate(); // Use o hook useNavigate
                   password
                 }
               });
+              localStorage.setItem('token', data.id);
               setIsLoggedIn(true);
               navigate(`/home/${data.id}`);
         }

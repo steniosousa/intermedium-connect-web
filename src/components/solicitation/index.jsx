@@ -1,13 +1,15 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import React from 'react';
 import Api from '../../api/service';
 import Alert from '../alert';
-
+ 
 export default function Solicitation({ showModal, onClose,datas }) {
   const [selectedEnvironment, setSelectedEnvironment] = useState('');
   const [ objectsOptions, setObjectsOptions] = useState([])
+  const [placesOptions, setPlacesOptions] = useState([])
   const [selectForSend, setSelectForSend] = useState([])
+  const [placesForSend, setPlacesForSend] = useState('')
 
     const[showAlert, setShowAlert] = useState(false)
     const[messengerAlert, setMessengerAlert] = useState('')
@@ -21,25 +23,41 @@ export default function Solicitation({ showModal, onClose,datas }) {
   };
 
   async function findObjects(){
-    try{
-        const {data} = await Api.get('object',{data:{companyId:datas.id}})
-        setObjectsOptions(data)
+    try {
+      const [object, place] = await Promise.all([
+        Api.get('object', { data: { companyId: datas.id } }),
+        Api.get('place', { data: { companyId: datas.id } })
+      ]);
+      
+      setObjectsOptions(object.data); 
+      setPlacesOptions(place.data);   
     }
-    catch(error){
-        console.log(error)
+    catch (error) {
+      console.log(error);
     }
+    
+    
+    
+    
+    
+    
   }
   useEffect(() =>{
     findObjects()
   },[])
-  const handleEnvironmentChange = (event) => {
-    setSelectedEnvironment(event.target.value);
-  };
+
 
   const handleObjectChange = (event) => {
+    const exist = selectForSend.find((item) => item.id == event.target.value)
+    if(exist) return
     const idSelect = objectsOptions.find((item) => item.id == event.target.value)
     setSelectForSend([...selectForSend,idSelect])
   };
+  const handlePlacesChange = (event) =>{
+    const idSelect = placesOptions.find((item) => item.id == event.target.value)
+    setPlacesForSend(idSelect.name)
+    console.log(idSelect)
+  }
 
  
   function handleExclusion(item){
@@ -49,6 +67,11 @@ export default function Solicitation({ showModal, onClose,datas }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if(placesForSend === '' || selectForSend.length == 0){
+      setShowAlert(true)
+      setMessengerAlert('Erro ao gravar solicitação, verifique se os campos então preenchidos')
+      return
+    }
     const objects = []
     for(const object of selectForSend){
         objects.push(object.id)
@@ -111,26 +134,33 @@ export default function Solicitation({ showModal, onClose,datas }) {
                  
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <Dialog.Title as="h3" className="text-base leading-6 text-gray-900">
-                  <span className="font-semibold">Usuário:</span> {datas.name}
+                  {/* <span className="font-semibold">Usuário:</span> {datas.name} */}
                 </Dialog.Title>
   
 
 
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="environment" className="block text-gray-700 font-semibold mb-1">
-                        Ambiente de Limpeza:
+                <div className="mb-4">
+                        <label htmlFor="object" className="block text-gray-700 font-semibold mb-1">
+                        Ambiente:
                         </label>
-                        <input
-                        type="text"
-                        id="environment"
-                        value={selectedEnvironment}
-                        onChange={handleEnvironmentChange}
-                        className="border rounded-md px-3 py-2 w-full"
-                        placeholder="Informe o ambiente de limpeza"
-                        required
-                        />
+                        <select className="border rounded-md px-3 py-2 w-full" onChange={handlePlacesChange}>
+                        <option value="" disabled>
+                            Selecione uma opção
+                        </option>
+                        {placesOptions.map((item) =>{
+                            return(
+                                <option key={item.id} value={item.id}>{item.name}</option>
+                            )
+                        })}
+                        </select>
                     </div>
+                    {placesForSend?(
+
+                    <button className="bg-green-600 text-white font-semibold px-4 py-2 rounded-full cursor-pointer" >
+                                {placesForSend}
+                            </button>
+                    ):null}
                     <div className="mb-4">
                         <label htmlFor="object" className="block text-gray-700 font-semibold mb-1">
                         Objeto:
@@ -147,6 +177,7 @@ export default function Solicitation({ showModal, onClose,datas }) {
                         })}
                         </select>
                     </div>
+                    
                     <Dialog.Title as="h3" className="text-base leading-6 text-gray-900 flex flex-row items-center justify-around m-4 ">
                     {selectForSend.map((item) =>{
                         return(
@@ -156,12 +187,21 @@ export default function Solicitation({ showModal, onClose,datas }) {
                   )
                 })}
                 </Dialog.Title>
+               <BasicDateCalendar/>
+                < div className='flex flex-row  justify-around w-full '>
                     <button
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md font-semibold"
                     >
                         Enviar
                     </button>
+                    <button
+                        className="bg-violet-500 hover:bg-black text-white py-2 px-4 rounded-md font-semibold"
+                    >
+                        Automatizar
+                    </button>
+
+                </div>
                 </form>
                   </div>
                 </div>
