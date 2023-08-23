@@ -111,14 +111,14 @@ export default function Solicitation({ showModal, onClose,datas }) {
       repeat
     }
     if(automated){
-      console.log(selectForSend,placesForSend,placesForSend,horsSelected)
       if(placesForSend === '' || selectForSend.length == 0|| horsSelected === ''){
         setShowAlert(true)
         setMessengerAlert('Erro ao gravar solicitação, verifique se os campos então preenchidos')
         return
       }
       try{
-        await Api.post('cleaning/cron', sendOfAutomated)
+       const {data} =  await Api.post('cleaning/cron', sendOfAutomated)
+       console.log(data)
         setMessengerAlert('Solicitação de automação cadastrada com sucesso')
         setShowAlert(true)
       }catch(error){
@@ -184,16 +184,13 @@ export default function Solicitation({ showModal, onClose,datas }) {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-          <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl m-4 transition-all sm:my-8 sm:w-full max-w-max">
-
+          <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl m-4 transition-all sm:my-8 sm:w-max min-w-max ">
               <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="flex flex-col items-center justify-center">
                  
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                   <Dialog.Title as="h3" className="text-base leading-6 text-gray-900">
                 </Dialog.Title>
-  
-
 
                 <form onSubmit={handleSubmit}>
                 <div className="mb-4">
