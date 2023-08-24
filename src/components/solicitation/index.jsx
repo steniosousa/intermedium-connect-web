@@ -27,7 +27,7 @@ export default function Solicitation({ showModal, onClose,datas }) {
   const [daySelected, setDaySelected] = useState('')
   const[horsSelected, setHorsSelected] = useState('')
 
-  const [automated, setAutomated] = useState(null)
+  const [automated, setAutomated] = useState(false)
 
     const[showAlert, setShowAlert] = useState(false)
     const[messengerAlert, setMessengerAlert] = useState('')
@@ -89,7 +89,7 @@ export default function Solicitation({ showModal, onClose,datas }) {
 
     if(placesForSend === '' || selectForSend.length == 0 ){
       setShowAlert(true)
-      setMessengerAlert('Erro ao gravar solicitação, verifique se os campos então preenchidos')
+      setMessengerAlert('Erro ao gravar solicitação, verifique se os campos então preenchidos,1')
       return
     }
     const objects = []
@@ -100,7 +100,7 @@ export default function Solicitation({ showModal, onClose,datas }) {
     const send = {
         userId:datas.id,
         where:placesForSend,
-        objects
+        objects,
     }
     const sendOfAutomated = {
       userId:datas.id,
@@ -117,12 +117,13 @@ export default function Solicitation({ showModal, onClose,datas }) {
         return
       }
       try{
-       const {data} =  await Api.post('cleaning/cron', sendOfAutomated)
+       const {data} =  await Api.post('cleaning', sendOfAutomated)
        console.log(data)
         setMessengerAlert('Solicitação de automação cadastrada com sucesso')
         setShowAlert(true)
       }catch(error){
-        console.log(error)
+        setShowAlert(true)
+        setMessengerAlert('Erro ao gravar automação, verifique os dados enviados')
       }
       return 
     }
