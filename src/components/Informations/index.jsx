@@ -63,12 +63,12 @@ export default function Informations({ showModal, onClose,datas }) {
                     <span className="font-semibold">Status:</span> {datas.status}
                   </p>
                 </div>
-                <div className="mt-2">
+                {/* <div className="mt-2">
                   <p className="text-sm text-gray-500">
                     <span className="font-semibold">Higienizar:</span> 
                   </p>
-                </div>
-                {datas.objects.map((object) =>{
+                </div> */}
+                {/* {datas.objects.map((object) =>{
                   return(
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
@@ -76,7 +76,7 @@ export default function Informations({ showModal, onClose,datas }) {
                   </p>
                 </div>
                   )
-                })}
+                })} */}
 
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
       {datas.entrance && <img src={datas.entrance} alt="Entrada" className=" h-auto" />}
