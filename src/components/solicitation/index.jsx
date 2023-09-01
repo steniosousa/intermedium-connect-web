@@ -161,7 +161,7 @@ export default function Solicitation({ showModal, onClose,datas }) {
     <Transition.Root show={showModal} as={Fragment}>
         
     <Dialog as="div" className="relative z-10" onClose={onClose}>
-        {showAlert && <Alert message={messengerAlert} onCloseAlert={openAlert} showAlert={showAlert}/> }
+        {showAlert && <Alert onCloseAlert={openAlert} showAlert={showAlert}/> }
       <Transition.Child
         as={Fragment}
         enter="ease-out duration-300"
@@ -285,7 +285,7 @@ export default function Solicitation({ showModal, onClose,datas }) {
                         onClick={() => setAutomated(!automated)}
                         className="bg-gray-600 hover:bg-black text-white py-2 px-4 rounded-md font-semibold"
                     >
-                        Automatizar
+                        Agendar
                     </button>
                     <button
                         type="submit"

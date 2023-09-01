@@ -50,7 +50,7 @@ export default function LitleModal({ showModal, onClose,action, companyId, text 
     <Transition.Root show={showModal} as={Fragment}>
         
     <Dialog as="div" className="relative z-10" onClose={onClose}>
-        {showAlert && <Alert message={messengerAlert} onCloseAlert={onClose} showAlert={showAlert}/> }
+        {showAlert && <Alert onCloseAlert={onClose} showAlert={showAlert}/> }
       <Transition.Child
         as={Fragment}
         enter="ease-out duration-300"
