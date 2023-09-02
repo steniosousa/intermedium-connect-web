@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const Api = axios.create({
-  baseURL: 'https://intermedium-connect-api-pht9-dev.fl0.io/',
+  baseURL: 'https://intermedium-82a2984b7ba3.herokuapp.com/',
+  // baseURL:'http://localhost:8080/'
 
 });
 export default Api;

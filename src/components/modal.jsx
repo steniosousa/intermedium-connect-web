@@ -8,7 +8,6 @@ export default function Modal() {
   const cancelButtonRef = useRef(null)
 
   function close(){
-    window.location.reload()
     setOpen(false)
   }
   return (
