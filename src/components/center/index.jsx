@@ -47,6 +47,7 @@ export function Center({ user }) {
 
   return (
     <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
+
       {loading ? (
         <div class="text-center">
           <div role="status">

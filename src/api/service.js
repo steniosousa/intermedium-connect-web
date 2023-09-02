@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const Api = axios.create({
-  baseURL: 'http://52.205.174.65:8080/'
+  baseURL: 'https://intermedium-connect-api-pht9-dev.fl0.io/',
+
 });
 export default Api;

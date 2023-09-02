@@ -12,6 +12,7 @@ function Login({ setIsLoggedIn }) {
 
     
     async function handleSingIn(e){
+      console.log('oi')
         e.preventDefault()
         try{
             const { data } = await Api.get('manager/', {
