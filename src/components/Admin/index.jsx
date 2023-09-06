@@ -133,13 +133,13 @@ export default function Admin({ showModal, onClose }) {
                             value={selectedEnvironment}
                             onChange={handleEnvironmentChange}
                             className="border rounded-md px-3 py-2 w-full"
-                            placeholder="Informe o email do objeto"
+                            placeholder="Informe o email do administrador"
                             required
                           />
                         </div>
                         <select className="border rounded-md px-3 py-2 w-full" onChange={handleCompanyChancge}>
                           <option value="">
-                            Selecione uma opção
+                            Selecione a empresa
                           </option>
                           {allCompanys && allCompanys.map((item) => {
                             return (

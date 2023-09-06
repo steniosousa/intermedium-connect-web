@@ -1,10 +1,13 @@
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import { format } from "date-fns";
+import Alert from '../alert';
 
 export default function Informations({ showModal, onClose, datas }) {
 
+  const [loading, setLoading] = useState(null)
+  const [sucess, setSucess] = useState(null)
   const handleClose = () => {
     onClose();
   };
@@ -12,17 +15,20 @@ export default function Informations({ showModal, onClose, datas }) {
 
 
 
-
-
   async function handleExclusion() {
+    setLoading(true)
     try {
       await Api.post('cleaning/delete', { id: datas.id })
-      onClose();
+      setSucess('sucess')
+      setLoading(false)
     } catch (error) {
-      window.alert('erro')
+      setSucess('error')
+      setLoading(false)
     }
   }
-
+  function openAlert() {
+    loading(!showAlert)
+  }
 
   return (
     <Transition.Root show={showModal} as={Fragment}>
@@ -40,6 +46,10 @@ export default function Informations({ showModal, onClose, datas }) {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto ">
+
+
+          {loading && <Alert onCloseAlert={openAlert} showAlert={loading} />}
+
           <div className="flex min-h-full min-w-lg items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -49,8 +59,25 @@ export default function Informations({ showModal, onClose, datas }) {
               leave="ease-in duration-200"
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
+              >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
+              {sucess == 'sucess' ? (
+                <div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
+                  <p class="font-bold">Sucesso!</p>
+                  <p class="text-sm">Sua solicitação foi excluída com sucesso.</p>
+                </div>
+    
+              ) : sucess == 'error' ? (
+                <div role="alert">
+                  <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+                    Erro!
+                  </div>
+                  <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+                    <p>Algo de errado aconteceu na sua solicitação</p>
+                  </div>
+                </div>
+    
+              ) : null}
                 <div>
                   <button type="button" onClick={handleClose} class="absolute right-4 top-4 text-red-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8">
                     <span class="sr-only">Close</span>
@@ -104,11 +131,11 @@ export default function Informations({ showModal, onClose, datas }) {
                     <dl class="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
                       <div class="border-t border-gray-200 pt-4">
                         <dt class="font-medium text-gray-900">Criado em:</dt>
-                        <dd class="mt-2 text-sm text-gray-500">{ format(new Date(datas.createAt), 'dd/MM/yyyy HH:mm')}</dd>
+                        <dd class="mt-2 text-sm text-gray-500">{format(new Date(datas.createAt), 'dd/MM/yyyy HH:mm')}</dd>
                       </div>
                       <div class="border-t border-gray-200 pt-4">
                         <dt class="font-medium text-gray-900">Ultima atualização</dt>
-                        <dd class="mt-2 text-sm text-gray-500">{ format(new Date(datas.updateAt), 'dd/MM/yyyy HH:mm')}</dd>
+                        <dd class="mt-2 text-sm text-gray-500">{format(new Date(datas.updateAt), 'dd/MM/yyyy HH:mm')}</dd>
                       </div>
                       <div class="border-t border-gray-200 pt-4">
                         <dt class="font-medium text-gray-900">Status</dt>
@@ -121,6 +148,7 @@ export default function Informations({ showModal, onClose, datas }) {
                     </dl>
                   </div>
                 </div>
+                <button onClick={() => handleExclusion()} className="h-8 px-3 rounded-md shadow text-white bg-red-500 m-4">Excluir</button>
               </Dialog.Panel>
             </Transition.Child>
           </div>
