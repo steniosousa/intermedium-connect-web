@@ -16,6 +16,7 @@ function Login({ setIsLoggedIn }) {
 
   const navigate = useNavigate();
 
+  const [manager, setManager] = useState()
 
 
   async function handleSingIn(e) {
@@ -28,10 +29,13 @@ function Login({ setIsLoggedIn }) {
           password
         }
       });
+
+
       localStorage.setItem('token', data.id);
       setProcess(false)
       setIsLoggedIn(true);
 
+      localStorage.setItem('manager',data)
       navigate(`/home/${data.id}`);
     }
     catch (error) {
@@ -43,8 +47,6 @@ function Login({ setIsLoggedIn }) {
   function handleForgot(e) {
     e.preventDefault()
     setForgot(!forgot)
-
-    console.log('oi')
   }
 
   function sendEmail() {
@@ -137,14 +139,7 @@ function Login({ setIsLoggedIn }) {
 
             <hr class="my-6 border-gray-300 w-full" />
 
-            {/* <button type="button" class="w-full block bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-900 font-semibold rounded-lg px-4 py-3 border border-gray-300">
-              <div class="flex items-center justify-center">
-              <span class="ml-4">
-              Log in
-              with
-              Google</span>
-              </div>
-            </button> */}
+           
 
             <p class="mt-8">Precisa de uma conta? <a href="#" class="text-blue-500 hover:text-blue-700 font-semibold">Crie sua conta com um adm já cadastrado</a></p>
 

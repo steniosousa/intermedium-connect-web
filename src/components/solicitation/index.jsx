@@ -11,15 +11,15 @@ export default function Solicitation({ showModal, onClose, datas }) {
   const [placesForSend, setPlacesForSend] = useState('')
   const [daysOfWeek, setDaysOfWeek] = useState([
     { dia: "Segunda-feira", value: 1 },
-    { dia: "Terça-feira", vale: 2 },
+    { dia: "Terça-feira", value: 2 },
     { dia: "Quarta-feira", value: 3 },
     { dia: "Quinta-feira", value: 4 },
     { dia: "Sexta-feira", value: 5 },
     { dia: "Sabado", value: 6 },
-    { dia: "Domingo", value: 7 },
+    { dia: "Domingo", value: 0 },
   ])
   const [horsOfDay, setHorsOfDay] = useState([
-    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24'
+    '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '00'
   ])
 
   const [repeat, setRepeat] = useState(false)
@@ -75,7 +75,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
   const handlePlacesChange = (event) => {
     if (event.target.value == '') return
     const idSelect = placesOptions.find((item) => item.id == event.target.value)
-    setPlacesForSend(idSelect.name)
+    setPlacesForSend(idSelect.id)
   }
 
 
@@ -98,39 +98,25 @@ export default function Solicitation({ showModal, onClose, datas }) {
     for (const object of selectForSend) {
       objects.push(object.id)
     }
-    const send = {
-      userId: datas.id,
-      where: placesForSend,
-      objects,
-      horsSelected
-    }
-    const sendOfAutomated = {
-      userId: datas.id,
-      where: placesForSend,
-      objects,
-      daySelected,
-      horsSelected,
-      repeat
-    }
-    if (automated) {
-      if (placesForSend === '' || selectForSend.length == 0 || horsSelected === '') {
-        setShowAlert(false)
-        setSucess('error')
-        return
-      }
-      try {
-        await Api.post('cleaning', sendOfAutomated)
-        setSucess('sucess')
-        setShowAlert(false)
 
-      } catch (error) {
-        setShowAlert(false)
-        setSucess('error')
-      }
-      return
+
+    var d = new Date();
+    d.setDate(d.getDate() + (parseInt(daySelected) + 7 - d.getDay()) % 7);
+    d.setHours(parseInt(horsSelected), 0, 0, 0)
+
+    const send = {
+      responsibleId: datas.id,
+      placeId: placesForSend,
+      objects,
+      automated,
+      userId:datas.id,
+      repeatable:repeat,
+      eventDate:automated? d: new Date(),
     }
+  
+
     try {
-      await Api.post('cleaning', send)
+      await Api.post('schedule/', send)
       setSucess('sucess')
       setShowAlert(false)
     }
@@ -275,7 +261,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
                                 </option>
                                 {daysOfWeek.map((item) => {
                                   return (
-                                    <option value={item.dia}>{item.dia}</option>
+                                    <option value={item.value}>{item.dia}</option>
 
                                   )
                                 })}

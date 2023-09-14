@@ -4,6 +4,8 @@ import Api from '../../api/service';
 import { format } from "date-fns";
 import Alert from '../alert';
 
+import suposicao from './download.jpeg'
+
 export default function Informations({ showModal, onClose, datas }) {
 
   const [loading, setLoading] = useState(null)
@@ -11,9 +13,6 @@ export default function Informations({ showModal, onClose, datas }) {
   const handleClose = () => {
     onClose();
   };
-
-
-
 
   async function handleExclusion() {
     setLoading(true)
@@ -93,31 +92,31 @@ export default function Informations({ showModal, onClose, datas }) {
                         <img
                           alt="gallery"
                           class="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.entrance} />
+                          src={datas.entrance ? datas.entrance : suposicao} />
                       </div>
                       <div class="w-1/2 p-1 md:p-2">
                         <img
                           alt="gallery"
                           class="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.exit} />
+                          src={datas.exit ? datas.exit : suposicao} />
                       </div>
                       <div class="w-1/2 p-1 md:p-2">
                         <img
                           alt="gallery"
                           class="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs1} />
+                          src={datas.obs1 ? datas.obs1 : suposicao} />
                       </div>
                       <div class="w-1/2 p-1 md:p-2">
                         <img
                           alt="gallery"
                           class="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs2} />
+                          src={datas.obs2 ? datas.obs2 : suposicao} />
                       </div>
                       <div class="w-1/2 p-1 md:p-2">
                         <img
                           alt="gallery"
                           class="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs3} />
+                          src={datas.obs3 ? datas.obs3 : suposicao} />
                       </div>
                     </div>
                   </div>
@@ -143,7 +142,7 @@ export default function Informations({ showModal, onClose, datas }) {
                       </div>
                       <div class="border-t border-gray-200 pt-4">
                         <dt class="font-medium text-gray-900">Ambiente</dt>
-                        <dd class="mt-2 text-sm text-gray-500">{datas.where}</dd>
+                        <dd class="mt-2 text-sm text-gray-500">{datas.place.name}</dd>
                       </div>
                     </dl>
                   </div>

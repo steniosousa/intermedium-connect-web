@@ -1,4 +1,5 @@
 export function User({name,hash,active,onRedirect,user}){
+  console.log(user)
 
   function redirect(){
     onRedirect(user)
