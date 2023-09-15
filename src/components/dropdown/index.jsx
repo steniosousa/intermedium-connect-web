@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import Api from "../../api/service";
+import Alert from "../alert";
 
 let useClickOutside = (handler) => {
   let domNode = useRef();
+
 
   useEffect(() => {
     let maybeHandler = (event) => {
@@ -32,12 +34,17 @@ const Dropdown3 = ({ userId }) => {
 
   async function getDatas() {
     try {
-      const { data } = await Api.get('/cleaning/cron', { params:{userId: userId.id} })
+      const { data } = await Api.get('/schedule/', { params:{userId: userId.id} })
       setDatas(data)
+    setShowModal(false)
+
     }
     catch (error) {
       console.log(error)
+    setShowModal(false)
+
     }
+
   }
 
   function handleDeletion(e){
@@ -55,18 +62,36 @@ const Dropdown3 = ({ userId }) => {
   useEffect(() => {
     getDatas()
   }, [userId])
+  const dayOfWeek = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"]
+  const [showModal, setShowModal] = useState(false)
+
+  async function sendOfDeletion(){
+    setShowModal(true)
+    try{
+      await Api.post('/schedule/edit',{params:choses})
+      getDatas()
+    }catch(error){
+      setShowModal(false)
+    }
+    setChoses([])
+  }
+
+  function CloseAlert(){
+    setShowModal(!showModal)
+  }
 
   return (
     <div className='container'>
       <div className='flex flex-wrap '>
         <div ref={domNode} >
+          {showModal && <Alert onCloseAlert={CloseAlert} showAlert={showModal}/>}
           <div className='text-center'>
             <div className='relative inline-block text-left'>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className={`flex items-center rounded bg-transparent py-3 px-5 text-base font-semibold text-white`}
               >
-                Agenda
+                Agendas
                 <span className='pl-2'>
                   <svg
                     width='12'
@@ -97,23 +122,29 @@ const Dropdown3 = ({ userId }) => {
                       <li >
                         <div class="flex pl-6 items-center rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                           <input id={item.id} type="checkbox" onChange={(value) =>handleDeletion(value)} value={item.id} lass="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                          <label for={item.id} class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{item.cron}</label>
-                          <label for={item.id} class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{item.where}</label>
-                          <label for={item.id} class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{item.cronHors}</label>
+                          <label for={item.id} class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{dayOfWeek[new Date(item.eventDate).getDay()]}</label>
+                          <label for={item.id} class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{item.place.name}</label>
+                          <label for={item.id}
+                           className="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300 p-4 justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0"
+                           >{item.deactivatedAt ? 'Desativado' : 'Ativo' }</label>
+
+                          <label for={item.id} className="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300 p-4 justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">{item.repeatable?"Repetindo": "Único"}</label>
+
+                        
                         </div>
                       </li>
                     )
                   })}
                 </ul>
-                <a href="#" class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
+                <a onClick={sendOfDeletion} class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
                   <svg class="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
                     <path d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 " />
                   </svg>
-                  Finalizar
+                  Desativar / Ativar
                 </a>
               </div>
-            </div>
-          </div>
+            </div>    
+           </div>
         </div>
       </div>
     </div>
