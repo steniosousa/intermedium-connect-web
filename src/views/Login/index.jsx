@@ -35,7 +35,7 @@ function Login({ setIsLoggedIn }) {
       setProcess(false)
       setIsLoggedIn(true);
 
-      localStorage.setItem('manager',data)
+      localStorage.setItem('manager', JSON.stringify(data))
       navigate(`/home/${data.id}`);
     }
     catch (error) {

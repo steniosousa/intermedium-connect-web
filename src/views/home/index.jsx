@@ -10,6 +10,8 @@ import React from "react";
 export default function Home() {
   const navigate = useNavigate();
   const id = localStorage.getItem('token')
+  const adminObj = JSON.parse(localStorage.getItem('manager'))
+
   if (!id) {
     navigate(`/`);
     return
@@ -18,7 +20,7 @@ export default function Home() {
   const [users, setUsers] = useState([])
   const [userWithFilter, setUserWithFilter] = useState([])
   const [userSelected, setUserSelected] = useState(null)
-  const [admin, setAdmin] = useState({ companys: { id: "0000", name: "" }, name: "Admin" })
+  const [admin, setAdmin] = useState({ companys: { id: adminObj.companyId, name: "" }, name: adminObj.name })
   const [filterUser, setFilterUser] = useState('')
 
   const [objectModal, setObjectModal] = useState(false)
@@ -80,13 +82,12 @@ export default function Home() {
     const filteredUsers = users.filter((item) =>
       item.name.toLowerCase().includes(filterUser.toLowerCase())
     );
-    if (filteredUsers) {
+    if (filteredUsers.length > 0) {
       setUserWithFilter(filteredUsers)
-
     } else {
       setUserWithFilter(users)
     }
-  }, [filterUser])
+  }, [filterUser, users])
 
 
   function handleLogin() {
@@ -153,10 +154,10 @@ export default function Home() {
             <button onClick={handleCompany} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Empresas</button>
             <button onClick={handleAdmin} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Administradores</button>
           </div>
-          {objectModal && <LitleModal companyId={admin.companyId} onClose={handleObject} showModal={objectModal} action={'object'} text={"Informar Objeto"} />}
-          {companyModal && <LitleModal companyId={admin.companyId} onClose={handleCompany} showModal={companyModal} action={'company'} text={"Informar empresa"} />}
-          {placeModal && <LitleModal companyId={admin.companyId} onClose={handlePlace} showModal={placeModal} action={'place'} text={"Informar ambiente"} />}
-          {adminModal && <Admin datas={admin.companyId} onClose={handleAdmin} showModal={adminModal} />}
+          {objectModal && <LitleModal companyId={admin.companys.id} onClose={handleObject} showModal={objectModal} action={'object'} text={"Informar Objeto"} />}
+          {companyModal && <LitleModal companyId={admin.companys.id} onClose={handleCompany} showModal={companyModal} action={'company'} text={"Informar empresa"} />}
+          {placeModal && <LitleModal companyId={admin.companys.id} onClose={handlePlace} showModal={placeModal} action={'place'} text={"Informar ambiente"} />}
+          {adminModal && <Admin datas={admin.companys.id} onClose={handleAdmin} showModal={adminModal} />}
 
           <div className="ml-auto flex items-center space-x-7">
 

@@ -5,12 +5,8 @@ import Alert from '../alert';
 import React from 'react';
 export default function LitleModal({ showModal, onClose, action, companyId, text }) {
   const [selectedEnvironment, setSelectedEnvironment] = useState('');
-
-
   const [showAlert, setShowAlert] = useState(false)
-
   const [sucess, setSucess] = useState(null)
-
 
   const cancelButtonRef = useRef(null);
 
