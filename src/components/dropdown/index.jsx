@@ -50,7 +50,6 @@ const Dropdown3 = ({ userId }) => {
       setChoses([...choses,e.target.value])
     }
     
-    console.log(choses)
   }
   
   useEffect(() => {

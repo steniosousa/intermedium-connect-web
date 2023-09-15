@@ -41,7 +41,6 @@ function Login({ setIsLoggedIn }) {
     catch (error) {
       setProcess(false)
       setModal(true)
-      console.log(error)
     }
   }
   function handleForgot(e) {
