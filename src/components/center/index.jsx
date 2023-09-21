@@ -3,11 +3,14 @@ import Line from "../line"
 import Solicitation from "../solicitation";
 import Api from "../../api/service";
 import Example from "../dropdown";
+import Schudeles from "../schudeles";
 
 export function Center({ user }) {
   const [showSolicitation, setShowSolicitation] = useState(false);
   const [copy, setCopy] = useState('Copiar')
   const [ dataLine, setDataLine] = useState([])
+
+  const [showSchudele, setShowSchudele] = useState(false)
 
   function handleSolicitation() {
     getAllDatas()
@@ -32,6 +35,10 @@ export function Center({ user }) {
     catch(error){
       console.log(error)
     }
+  }
+
+  async function handleShowSchudele(){
+   setShowSchudele(!showSchudele)
   }
 
   useEffect(() =>{
@@ -60,12 +67,14 @@ export function Center({ user }) {
         <div className="flex items-center space-x-3 ">
           <a href="#" className="px-3 border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white pb-1.5">Histórico</a>
           <a href="#" className="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 line-through">
-          <Example userId={user}/>
 
           </a>
           <a href="#" className="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 sm:block hidden line-through">Cronograma</a>
           <a href="#" className="px-3 border-b-2 border-transparent text-gray-600 dark:text-gray-400 pb-1.5 sm:block hidden line-through">Notificações</a>
           <a href="#" onClick={handleSolicitation} className="px-3 border-b-2 border-transparent text-white  pb-1.5 sm:block hidden bg-blue-500 rounded-md shadow py-2 m-4 ">Nova solicitação</a>
+          <a href="#" onClick={handleShowSchudele} className="px-3 border-b-2 border-transparent text-white  pb-1.5 sm:block hidden bg-blue-500 rounded-md shadow py-2 m-4 ">Agenda</a>
+          {showSchudele && <Schudeles onClose={handleShowSchudele} datas={user} showModal={showSchudele} />}
+        
         </div>
       </div>
       <div className="sm:p-7 p-4">
