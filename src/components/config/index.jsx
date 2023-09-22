@@ -8,6 +8,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
   const [loading, setLoading] = useState(null)
   const [sucess, setSucess] = useState(null)
+  const [message, setMessage] = useState('')
   const [objects, setObjects] = useState([])
   const [places, setPlaces] = useState([])
 
@@ -25,7 +26,6 @@ export default function Config({ showModal, onClose, companyId }) {
         Api.get('place', { data: { companyId: companyId.companys.id } })
       ]);
       setLoading(false)
-      setSucess('sucess')
       setObjects(object.data)
       setPlaces(place.data)
     }
@@ -50,9 +50,13 @@ export default function Config({ showModal, onClose, companyId }) {
           placeId:placeId.id
         }
       })
+      setMessage('Ambiente deletado com sucesso')
+      setSucess('sucess')
       retriveDatas()
     } catch (error) {
-      console.log(error)
+      setLoading(false)
+      setMessage('Ambiente sendo usado em alguma solicitação')
+      setSucess('error')
     }
   }
 
@@ -64,22 +68,17 @@ export default function Config({ showModal, onClose, companyId }) {
           objectId:objectId.id
         }
       })
+      setMessage('Objeto deletado com sucesso')
+      setSucess('sucess')
       retriveDatas()
     } catch (error) {
+      setLoading(false)
+      setMessage('Objeto sendo usado em alguma solicitação')
+      setSucess('error')
       console.log(error)
     }
   }
 
-  async function handleDisableOrEnableSchudele(schudeleId) {
-    try {
-      await Api.post('/schedule/edit', {
-        schudeleId
-      })
-      retriveDatas()
-    } catch (error) {
-      console.log(error)
-    }
-  }
   function openAlert() {
     loading(!showAlert)
   }
@@ -120,7 +119,14 @@ export default function Config({ showModal, onClose, companyId }) {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
                 {sucess == 'sucess' ? (
-                  null
+                  <div role="alert">
+                  <div className="bg-green-500 text-white font-bold rounded-t px-4 py-2">
+                    Sucesso!
+                  </div>
+                  <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+                    <p>{message}</p>
+                  </div>
+                </div>
 
                 ) : sucess == 'error' ? (
                   <div role="alert">
@@ -128,7 +134,7 @@ export default function Config({ showModal, onClose, companyId }) {
                       Erro!
                     </div>
                     <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                      <p>Algo de errado aconteceu na sua solicitação</p>
+                      <p>{message}</p>
                     </div>
                   </div>
 
