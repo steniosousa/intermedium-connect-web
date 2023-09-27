@@ -135,9 +135,9 @@ export default function Schudeles({ showModal, onClose, datas }) {
                       return (
                         <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-5 sm:gap-y-16 lg:gap-x-8" key={item.id}>
                           <div>{item.deactivatedAt ? (
-                            <div className='h-8 w-4 bg-green-600 items-center flex'></div>
-                          ) : (
                             <div className='h-8 w-4 bg-red-600'></div>
+                            ) : (
+                            <div className='h-8 w-4 bg-green-600 items-center flex'></div>
                           )}</div>
                           <div className="border-t border-gray-200 pt-4 ">
                             <dt className="font-medium text-gray-900">AGENDADO PARA:</dt>
@@ -155,9 +155,9 @@ export default function Schudeles({ showModal, onClose, datas }) {
                           <div className='flex flex-col justify-center gap-2'>
                             <button className='text-red-600' onClick={() => handleDeleteSchudele(item.id)}>EXCLUIR</button>
                             <div>{item.deactivatedAt ? (
+                              <button onClick={() =>handleDisableOrEnableSchudele(item.id)}>ATIVAR</button>
+                              ) : (
                             <button onClick={() => handleDisableOrEnableSchudele(item.id)}>DESATIVAR</button>
-                          ) : (
-                            <button onClick={() =>handleDisableOrEnableSchudele(item.id)}>ATIVAR</button>
                           )}</div>
                           </div>
                         </dl>

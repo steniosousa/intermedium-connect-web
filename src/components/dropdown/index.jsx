@@ -126,7 +126,7 @@ const Dropdown3 = ({ userId }) => {
                           <label for={item.id} className="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{item.place.name}</label>
                           <label for={item.id}
                            className="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300 p-4 justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0"
-                           >{item.deactivatedAt ? 'Desativado' : 'Ativo' }</label>
+                           >{item.deactivatedAt ? 'Ativo' : 'Desativado' }</label>
 
                           <label for={item.id} className="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300 p-4 justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">{item.repeatable?"Repetindo": "Único"}</label>
 
