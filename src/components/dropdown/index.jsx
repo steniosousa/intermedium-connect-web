@@ -40,7 +40,6 @@ const Dropdown3 = ({ userId }) => {
 
     }
     catch (error) {
-      console.log(error)
     setShowModal(false)
 
     }

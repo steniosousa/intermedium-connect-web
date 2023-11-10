@@ -7,7 +7,6 @@ import Admin from "../../components/Admin";
 import LitleModal from "../../components/litleModal";
 import React from "react";
 import Config from "../../components/config";
-
 export default function Home() {
   const navigate = useNavigate();
   const id = localStorage.getItem('token')
@@ -49,7 +48,6 @@ export default function Home() {
       setUsers(data)
 
     } catch (error) {
-      console.log(error)
     }
   }
 

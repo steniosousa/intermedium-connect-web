@@ -51,7 +51,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
       setPlacesOptions(place.data);
     }
     catch (error) {
-      console.log(error);
     }
 
 

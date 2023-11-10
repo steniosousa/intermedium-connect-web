@@ -29,7 +29,6 @@ export default function Schudeles({ showModal, onClose, datas }) {
     try {
       const { data } = await Api.get('/schedule/', { params: { userId: datas.id } })
       setSchudele(data)
-      console.log(data)
     }
     catch (error) {
       setSucess('error')
@@ -47,7 +46,6 @@ export default function Schudeles({ showModal, onClose, datas }) {
      })
      retriveDatas()
    }catch(error){
-     console.log(error)
    }
 
   }
@@ -59,7 +57,6 @@ export default function Schudeles({ showModal, onClose, datas }) {
       })
       retriveDatas()
     }catch(error){
-      console.log(error)
     }
   }
   function openAlert() {

@@ -33,7 +33,6 @@ export function Center({ user }) {
       setDataLine(data)
     }
     catch(error){
-      console.log(error)
     }
   }
 
