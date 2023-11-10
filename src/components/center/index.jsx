@@ -8,7 +8,7 @@ import Schudeles from "../schudeles";
 export function Center({ user }) {
   const [showSolicitation, setShowSolicitation] = useState(false);
   const [copy, setCopy] = useState('Copiar')
-  const [ dataLine, setDataLine] = useState([])
+  const [dataLine, setDataLine] = useState([])
 
   const [showSchudele, setShowSchudele] = useState(false)
 
@@ -27,22 +27,24 @@ export function Center({ user }) {
     }
   }
 
-  async function getAllDatas(){
-    try{
-      const {data} = await Api.get('/cleaning',{userId:user.id})
-      setDataLine(data)
-    }
-    catch(error){
+  async function getAllDatas() {
+    console.log(user.id);
+    try {
+      const { data } = await Api.get('/cleaning', {
+        params: { userId: user.id }
+      });
+      setDataLine(data);
+    } catch (error) {
     }
   }
 
-  async function handleShowSchudele(){
-   setShowSchudele(!showSchudele)
+  async function handleShowSchudele() {
+    setShowSchudele(!showSchudele)
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     getAllDatas()
-  },[])
+  }, [])
 
   return (
     <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
@@ -73,7 +75,7 @@ export function Center({ user }) {
           <a href="#" onClick={handleSolicitation} className="px-3 border-b-2 border-transparent text-white  pb-1.5 sm:block hidden bg-blue-500 rounded-md shadow py-2 m-4 ">Nova solicitação</a>
           <a href="#" onClick={handleShowSchudele} className="px-3 border-b-2 border-transparent text-white  pb-1.5 sm:block hidden bg-blue-500 rounded-md shadow py-2 m-4 ">Agenda</a>
           {showSchudele && <Schudeles onClose={handleShowSchudele} datas={user} showModal={showSchudele} />}
-        
+
         </div>
       </div>
       <div className="sm:p-7 p-4">
@@ -101,7 +103,7 @@ export function Center({ user }) {
           <tbody className="text-gray-600 dark:text-gray-100">
             {dataLine && dataLine.map((clear) => {
               return (
-                <Line clean={clear} key={clear.id}  />
+                <Line clean={clear} key={clear.id} />
               )
             })}
           </tbody>
