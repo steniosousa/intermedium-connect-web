@@ -87,7 +87,7 @@ export default function Schudeles({ showModal, onClose, datas }) {
 
           {loading && <Alert onCloseAlert={openAlert} showAlert={loading} />}
 
-          <div className="flex min-h-full min-w-lg items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full min-w-lg items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -97,7 +97,7 @@ export default function Schudeles({ showModal, onClose, datas }) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
+              <Dialog.Panel className="bg-gray-600 text-white relative transform overflow-hidden rounded-lg  text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
                 {sucess == 'sucess' ? (
                   <div className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
                     <p className="font-bold">Sucesso!</p>
@@ -115,7 +115,7 @@ export default function Schudeles({ showModal, onClose, datas }) {
                   </div>
 
                 ) : null}
-                <div>
+                <div className=''> 
                   <button type="button" onClick={handleClose} className="absolute right-4 top-4 text-red-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8">
                     <span className="sr-only">Close</span>
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
@@ -124,10 +124,10 @@ export default function Schudeles({ showModal, onClose, datas }) {
                   </button>
                 </div>
 
-                <div className="mx-auto grid max-w-2xl self-center grid-cols-1 items-center  lg:max-w-max m-10" >
+                <div className="bg-gray-600 text-white mx-auto grid max-w-2xl self-center grid-cols-1 items-center  lg:max-w-max m-10 " >
                   <div>
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Agendamentos</h2>
-                    <p className="mt-4 text-gray-500">As informações servem para te ajudar a entender melhor os agendamentos.</p>
+                    <p className="mt-4 text-white">As informações servem para te ajudar a entender melhor os agendamentos.</p>
                     {schudele.map((item) => {
                       return (
                         <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-5 sm:gap-y-16 lg:gap-x-8" key={item.id}>
@@ -138,16 +138,16 @@ export default function Schudeles({ showModal, onClose, datas }) {
                           )}</div>
                           <div className="border-t border-gray-200 pt-4 ">
                             <dt className="font-medium text-gray-900">AGENDADO PARA:</dt>
-                            <dd className=" text-gray-500">{diasDaSemana[new Date(item.eventDate).getDay()]} - {new Date(item.eventDate).toLocaleString('pt-br')} </dd>
+                            <dd className=" text-white">{diasDaSemana[new Date(item.eventDate).getDay()]} - {new Date(item.eventDate).toLocaleString('pt-br')} </dd>
                           </div>
                           <div className="border-t border-gray-200 pt-4">
                             <dt className="font-medium text-gray-900">AMBIENTE:</dt>
-                            <dd className="mt-2 text-sm text-gray-500">{item.place.name}</dd>
+                            <dd className="mt-2 text-sm text-white">{item.place.name}</dd>
                           </div>
 
                           <div className="border-t border-gray-200 pt-4">
                             <dt className="font-medium text-gray-900">RECORRENTE:</dt>
-                            <dd className="mt-2 text-sm text-gray-500">{item.repeatable ? 'SIM' : "NÃO"}</dd>
+                            <dd className="mt-2 text-sm text-white">{item.repeatable ? 'SIM' : "NÃO"}</dd>
                           </div>
                           <div className='flex flex-col justify-center gap-2'>
                             <button className='text-red-600' onClick={() => handleDeleteSchudele(item.id)}>EXCLUIR</button>

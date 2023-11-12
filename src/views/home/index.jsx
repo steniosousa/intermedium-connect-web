@@ -3,8 +3,6 @@ import Api from "../../api/service";
 import { useEffect, useState } from "react";
 import { User } from "../../components/user";
 import { Center } from "../../components/center";
-import Admin from "../../components/Admin";
-import LitleModal from "../../components/litleModal";
 import React from "react";
 import Config from "../../components/config";
 export default function Home() {
@@ -23,10 +21,6 @@ export default function Home() {
   const [admin, setAdmin] = useState({ companys: { id: adminObj.companyId, name: "" }, name: adminObj.name })
   const [filterUser, setFilterUser] = useState('')
 
-  const [objectModal, setObjectModal] = useState(false)
-  const [companyModal, setCompanyModal] = useState(false)
-  const [adminModal, setAdminModal] = useState(false)
-  const [placeModal, setPlaceModal] = useState(false)
   const updateWindowSize = () => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
   };
@@ -59,21 +53,7 @@ export default function Home() {
 
 
 
-  function handleObject() {
-    setObjectModal(!objectModal)
-  }
 
-  function handleCompany() {
-    setCompanyModal(!companyModal)
-  }
-
-  function handleAdmin() {
-    setAdminModal(!adminModal)
-  }
-
-  function handlePlace() {
-    setPlaceModal(!placeModal)
-  }
 
 
   useEffect(() => {
@@ -147,16 +127,7 @@ export default function Home() {
         <div className="h-16 lg:flex w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
           <div className="flex h-full text-gray-600 dark:text-gray-400">
             < button className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Intermedium</button>
-            <button className="cursor-pointer h-full border-b-2 border-blue-500 text-blue-500 dark:text-white dark:border-white inline-flex mr-8 items-center">Usuário</button>
-            <button onClick={handleObject} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Objetos</button>
-            <button onClick={handlePlace} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Ambientes</button>
-            <button onClick={handleCompany} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Empresas</button>
-            <button onClick={handleAdmin} className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Administradores</button>
           </div>
-          {objectModal && <LitleModal companyId={admin.companys.id} onClose={handleObject} showModal={objectModal} action={'object'} text={"Informar Objeto"} />}
-          {companyModal && <LitleModal companyId={admin.companys.id} onClose={handleCompany} showModal={companyModal} action={'company'} text={"Informar empresa"} />}
-          {placeModal && <LitleModal companyId={admin.companys.id} onClose={handlePlace} showModal={placeModal} action={'place'} text={"Informar ambiente"} />}
-          {adminModal && <Admin datas={admin.companys.id} onClose={handleAdmin} showModal={adminModal} />}
 
           <div className="ml-auto flex items-center space-x-7">
             {showConfig && <Config onClose={handleConfig} showModal={showConfig} companyId={admin} />}

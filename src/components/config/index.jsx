@@ -14,11 +14,15 @@ export default function Config({ showModal, onClose, companyId }) {
   const [users, setUsers] = useState([])
   const [companys, setCompanys] = useState([])
 
+  const [selectArgFromCreate, setSelectArgFromCreate] = useState('')
+  const [nameOfCreation, setNameOfCreation] = useState('')
   const [fixObj, setFixObj] = useState([])
 
+  const [route, setRoute] = useState('')
   const [check, setCheck] = useState([])
 
   const [create, setCreate] = useState(false)
+
 
 
   const id = localStorage.getItem('token')
@@ -30,6 +34,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
   async function retriveDatas() {
     setLoading(true)
+
     try {
       const [object, place, users, company] = await Promise.all([
         Api.get('object', { data: { companyId: companyId.companys.id } }),
@@ -48,52 +53,35 @@ export default function Config({ showModal, onClose, companyId }) {
       setSucess('error')
     }
 
-
   }
 
 
+  async function deletion() {
+    check.map(async (item) => {
+      setLoading(true)
+      let params = {}
+      params[`${route}Id`] = item
 
-
-
-
-  async function deletionPlace(placeId) {
-    setLoading(true)
-    try {
-      await Api.delete('/place', {
-        params: {
-          placeId: placeId.id
-        }
-      })
-      setMessage('Ambiente deletado com sucesso')
-      setSucess('sucess')
-      retriveDatas()
-    } catch (error) {
-      setLoading(false)
-      setMessage('Ambiente sendo usado em alguma solicitação')
-      setSucess('error')
-    }
-  }
-
-  async function DeleteObject(objectId) {
-    setLoading(true)
-    try {
-      await Api.delete('/object', {
-        params: {
-          objectId: objectId.id
-        }
-      })
-      setMessage('Objeto deletado com sucesso')
-      setSucess('sucess')
-      retriveDatas()
-    } catch (error) {
-      setLoading(false)
-      setMessage('Objeto sendo usado em alguma solicitação')
-      setSucess('error')
-    }
+      try {
+        await Api.delete(`/${selectArgFromCreate}`, {
+          params
+        })
+        setMessage('Deletado com sucesso')
+        setSucess('sucess')
+        retriveDatas()
+      } catch (error) {
+        setLoading(false)
+        setMessage('Já sendo usado em alguma solicitação')
+        setSucess('error')
+      }
+    })
   }
 
 
-  function handleSelect(datas) {
+  function handleSelect(datas, routeCurrent) {
+    setRoute(routeCurrent)
+    retriveDatas()
+    setSucess(null)
     setFixObj([])
     setCheck([])
     setCreate(false)
@@ -111,7 +99,31 @@ export default function Config({ showModal, onClose, companyId }) {
     loading(!showAlert)
   }
 
-  function handleShowCreation() {
+  async function handleCreation() {
+    setLoading(true)
+    if (nameOfCreation === '') {
+      setLoading(false)
+      setSucess('error')
+      setMessage('Nome da criação vazio')
+      return
+    }
+    const send = {
+      companyId: companyId.companys.id,
+      name: nameOfCreation,
+      password: "Intermedium"
+    }
+
+    try {
+      await Api.post(selectArgFromCreate, send)
+      setSucess('sucess')
+      setMessage('Criação bem sucedida!')
+      setLoading(false)
+    }
+    catch (error) {
+      setMessage('Erro ao efetuar criação!')
+      setSucess('error')
+      setLoading(false)
+    }
 
   }
 
@@ -122,6 +134,8 @@ export default function Config({ showModal, onClose, companyId }) {
       return isItemInState ? oldState.filter((i) => i !== item) : [...oldState, item];
     });
   }
+
+
 
   useEffect(() => {
     retriveDatas()
@@ -159,22 +173,22 @@ export default function Config({ showModal, onClose, companyId }) {
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-gray-900 text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
                 {sucess == 'sucess' ? (
-                  <div role="alert">
-                    <div className="bg-green-500 text-white font-bold rounded-t px-4 py-2">
+                  <div role="alert my-8">
+                    <div className="bg-green-500 text-white font-bold rounded-t   my-16">
                       Sucesso!
-                    </div>
-                    <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                      <p>{message}</p>
+                      <div className="border border-t-0 border-green-400 rounded-b bg-green-100  text-black ">
+                        <p>{message}</p>
+                      </div>
                     </div>
                   </div>
 
                 ) : sucess == 'error' ? (
-                  <div role="alert">
-                    <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+                  <div role="alert" className='h-8'>
+                    <div className="bg-red-500 text-white font-bold rounded-t   my-16">
                       Erro!
-                    </div>
-                    <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                      <p>{message}</p>
+                      <div className="border border-t-0 border-red-400 rounded-b bg-red-100  text-red-700 ">
+                        <p>{message}</p>
+                      </div>
                     </div>
                   </div>
 
@@ -183,10 +197,31 @@ export default function Config({ showModal, onClose, companyId }) {
                 {create ? (
 
                   <div className='my-20 align-center flex flex-col justify-center'>
-                    <input type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe um nome" />
+                    <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Criação de:</label>
+                    <select selected onChange={(value) => setSelectArgFromCreate(value.target.value)} id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                      <option hidden  >Selecione</option>
+                      <option value="object">Objetos</option>
+                      <option value="place">Ambientes</option>
+                      <option value="company">Empresa</option>
+                      <option value="manager">Administrador</option>
+                    </select>
+                    {selectArgFromCreate == 'manager' ? (
+                       <select selected id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                       <option hidden>Selecione a empresa</option>
+                       {companys.map((item) =>{
+                        return(
+                          <option value="Administrador">{item.name}</option>
+
+                        )
+                       })}
+                     </select>
+                    ) : null}
+                    <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe um nome" />
+                   
                     <div className='m-6'>
-                      <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>
+                      <button onClick={handleCreation} type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>
                     </div>
+
                   </div>
                 ) : null}
                 <div>
@@ -223,16 +258,16 @@ export default function Config({ showModal, onClose, companyId }) {
                           <li >
                             <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">CONFIGURAÇÕES</a>
                           </li>
-                          <li onClick={() => handleSelect(users)}>
+                          <li onClick={() => handleSelect(users, 'users')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" aria-current="page">Usuários</a>
                           </li>
-                          <li onClick={() => handleSelect(objects)}>
+                          <li onClick={() => handleSelect(objects, 'object')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Objetos</a>
                           </li>
-                          <li onClick={() => handleSelect(places)}>
+                          <li onClick={() => handleSelect(places, 'place')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Ambientes</a>
                           </li>
-                          <li onClick={() => handleSelect(companys)}>
+                          <li onClick={() => handleSelect(companys, 'company')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Empresas</a>
                           </li>
                           <li >
@@ -245,11 +280,13 @@ export default function Config({ showModal, onClose, companyId }) {
                   <div className='flex flex-row my-8 justify-between w-full '>
                     {fixObj.length != 0 ? (
                       <div className='flex flex-col'>
-                        <button type="button" onClick={() => {setCreate(!create); setFixObj([])}} class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>
+                        <button type="button" onClick={() => { setCreate(!create); setFixObj([]) }} class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>
                         {check.length != 0 ? (
                           <>
-                            <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Editar</button>
-                            <button type="button" class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Excluir</button>
+                            {check.length == 1 ? (
+                              <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Editar</button>
+                            ) : null}
+                            <button type="button" onClick={deletion} class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Excluir</button>
                           </>
 
                         ) : (
