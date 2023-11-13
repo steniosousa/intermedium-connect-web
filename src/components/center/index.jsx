@@ -42,7 +42,7 @@ export function Center({ user }) {
 
   useEffect(() => {
     getAllDatas()
-  }, [])
+  }, [user])
 
   return (
     <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
