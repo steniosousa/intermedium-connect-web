@@ -51,7 +51,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
       setPlacesOptions(place.data);
     }
     catch (error) {
-      console.log(error);
     }
 
 
@@ -160,7 +159,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto ">
@@ -200,7 +199,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
                     <svg className="fill-current opacity-75 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z" /></svg>
                   </div>
                 </div>
-                <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                <div className="bg-gray-900 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="flex flex-col items-center justify-center">
 
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -209,10 +208,10 @@ export default function Solicitation({ showModal, onClose, datas }) {
 
                       <form>
                         <div className="mb-4">
-                          <label htmlFor="object" className="block text-gray-700 font-semibold mb-1">
+                          <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
                             Ambiente:
                           </label>
-                          <select className="border rounded-md px-3 py-2 w-full" onChange={handlePlacesChange}>
+                          <select className="border rounded-md px-3 py-2 w-full bg-gray-600 text-white" onChange={handlePlacesChange}>
                             <option value="">
                               Selecione um ambiente
                             </option>
@@ -224,10 +223,10 @@ export default function Solicitation({ showModal, onClose, datas }) {
                           </select>
                         </div>
                         <div className="mb-4">
-                          <label htmlFor="object" className="block text-gray-700 font-semibold mb-1">
+                          <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
                             Objeto:
                           </label>
-                          <select className="border rounded-md px-3 py-2 w-full" onChange={handleObjectChange}>
+                          <select className="border rounded-md px-3 py-2 w-full bg-gray-600 text-white" onChange={handleObjectChange}>
                             <option value="" >
                               Selecione um objeto
                             </option>
@@ -252,32 +251,32 @@ export default function Solicitation({ showModal, onClose, datas }) {
                         {automated ? (
                           <div className='flex flex-row items-center'>
                             <div className="mb-4">
-                              <label htmlFor="object" className="block text-gray-700 font-semibold mb-1">
+                              <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
                                 Dia da semana:
                               </label>
-                              <select className="border rounded-md px-3 py-2 w-40" onChange={handleSelectDay}>
+                              <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectDay}>
                                 <option value="" >
                                   Dia
                                 </option>
                                 {daysOfWeek.map((item) => {
                                   return (
-                                    <option value={item.value}>{item.dia}</option>
+                                    <option className="" value={item.value}>{item.dia}</option>
 
                                   )
                                 })}
                               </select>
                             </div>
                             <div className="mb-4">
-                              <label htmlFor="object" className="block text-gray-700 font-semibold mb-1">
+                              <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
                                 Horário:
                               </label>
-                              <select className="border rounded-md px-3 py-2 w-40" onChange={handleSelectHors}>
-                                <option value="">
+                              <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectHors}>
+                                <option className="bg-gray-600 text-white"value="">
                                   Horário
                                 </option>
                                 {horsOfDay.map((item) => {
                                   return (
-                                    <option value={item}>{item}</option>
+                                    <option className="bg-gray-600 text-white"value={item}>{item}</option>
 
                                   )
                                 })}
@@ -314,7 +313,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="bg-gray-900 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"

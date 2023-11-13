@@ -114,10 +114,7 @@ function Login({ setIsLoggedIn }) {
                   focus:bg-white focus:outline-none" required />
               </div>
 
-              <div className="text-right mt-2">
-                <button onClick={(e) => handleForgot(e)} className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Esqueceu sua senha?</button>
-              </div>
-
+             
 
 
               {process ? (
@@ -134,6 +131,10 @@ function Login({ setIsLoggedIn }) {
                 <button onClick={(e) => handleSingIn(e)} className="w-full block bg-blue-500 hover:bg-blue-400 focus:bg-blue-400 text-white font-semibold rounded-lg
                   px-4 py-3 mt-6">Log In</button>
               )}
+               <div className="text-right mt-2">
+                <button onClick={(e) => handleForgot(e)} className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Esqueceu sua senha?</button>
+              </div>
+
             </form>
 
             <hr className="my-6 border-gray-300 w-full" />
