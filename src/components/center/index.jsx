@@ -28,10 +28,11 @@ export function Center({ user }) {
 
   async function getAllDatas() {
     try {
-      const { data } = await Api.get('/cleaning', { userId: user.id })
-      setDataLine(data)
-    }
-    catch (error) {
+      const { data } = await Api.get('/cleaning', {
+        params: { userId: user.id }
+      });
+      setDataLine(data);
+    } catch (error) {
     }
   }
 
