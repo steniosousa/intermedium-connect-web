@@ -28,7 +28,6 @@ export function Center({ user }) {
   }
 
   async function getAllDatas() {
-    console.log(user.id);
     try {
       const { data } = await Api.get('/cleaning', {
         params: { userId: user.id }
