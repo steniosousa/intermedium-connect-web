@@ -44,6 +44,8 @@ export function Center({ user }) {
     getAllDatas()
   }, [user])
 
+
+
   return (
     <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
       {showSolicitation && <Solicitation onClose={handleSolicitation} showModal={showSolicitation} datas={user} />}
