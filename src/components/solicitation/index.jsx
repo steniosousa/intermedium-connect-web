@@ -43,8 +43,16 @@ export default function Solicitation({ showModal, onClose, datas }) {
   async function findObjects() {
     try {
       const [object, place] = await Promise.all([
-        Api.get('object', { data: { companyId: datas.id } }),
-        Api.get('place', { data: { companyId: datas.id } })
+        Api.get('objects/recover', {
+          params: {
+            companyId: datas.companyId
+          }
+        }),
+        Api.get('place/recover', {
+          params: {
+            companyId: datas.companyId
+          }
+        })
       ]);
 
       setObjectsOptions(object.data);
@@ -86,6 +94,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
   const handleSubmit = async (event) => {
     event.preventDefault()
     setShowAlert(true)
+    let route;
 
     if (placesForSend === '' || selectForSend.length == 0) {
       setShowAlert(false)
@@ -104,18 +113,19 @@ export default function Solicitation({ showModal, onClose, datas }) {
     d.setHours(parseInt(horsSelected), 0, 0, 0)
 
     const send = {
-      responsibleId: datas.id,
       placeId: placesForSend,
-      objects,
-      automated,
-      userId:datas.id,
-      repeatable:repeat,
-      eventDate:automated? d: new Date(),
+      objectsId: objects,
+      userId: datas.id,
+      repeatable: repeat,
+      eventDate: automated ? d : new Date(),
     }
-  
-
+    if (automated) {
+      route = 'schedule/create'
+    } else {
+      route = 'cleaning/create'
+    }
     try {
-      await Api.post('schedule/', send)
+      await Api.post(route, send)
       setSucess('sucess')
       setShowAlert(false)
     }
@@ -271,12 +281,12 @@ export default function Solicitation({ showModal, onClose, datas }) {
                                 Horário:
                               </label>
                               <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectHors}>
-                                <option className="bg-gray-600 text-white"value="">
+                                <option className="bg-gray-600 text-white" value="">
                                   Horário
                                 </option>
                                 {horsOfDay.map((item) => {
                                   return (
-                                    <option className="bg-gray-600 text-white"value={item}>{item}</option>
+                                    <option className="bg-gray-600 text-white" value={item}>{item}</option>
 
                                   )
                                 })}

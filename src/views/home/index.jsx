@@ -5,6 +5,7 @@ import { User } from "../../components/user";
 import { Center } from "../../components/center";
 import React from "react";
 import Config from "../../components/config";
+
 export default function Home() {
   const navigate = useNavigate();
   const id = localStorage.getItem('token')
@@ -38,23 +39,20 @@ export default function Home() {
 
   async function getDatas() {
     try {
-      const { data } = await Api.get('/user/allUsers', { params: { id } })
+      const { data } = await Api.get('/user/recover', { params: { companyId: adminObj.companyId } })
       setUsers(data)
+      if(data.length == 0 ){
+        setUsers('Sem usuários')
+      }
 
     } catch (error) {
+
     }
   }
-
-
 
   function handleConfig() {
     setShowConfig(!showConfig)
   }
-
-
-
-
-
 
   useEffect(() => {
     if (users == 'Sem usuários') return
@@ -141,12 +139,12 @@ export default function Home() {
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-              <div onClick={handleConfig}>
-                <svg className="cursor-pointer w-4 h-4 m-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z" />
-                </svg>
+            <div onClick={handleConfig}>
+              <svg className="cursor-pointer w-4 h-4 m-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M1 5h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 1 0 0-2H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2Zm18 4h-1.424a3.228 3.228 0 0 0-6.152 0H1a1 1 0 1 0 0 2h10.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Zm0 6H8.576a3.228 3.228 0 0 0-6.152 0H1a1 1 0 0 0 0 2h1.424a3.228 3.228 0 0 0 6.152 0H19a1 1 0 0 0 0-2Z" />
+              </svg>
 
-              </div>
+            </div>
             <svg onClick={() => handleLogin()} className="cursor-pointer w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
             </svg>

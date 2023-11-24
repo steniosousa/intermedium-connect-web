@@ -9,9 +9,9 @@ export default function Line({ clean }) {
   const [showModal, setShowModal] = useState(false);
 
 
-  const startDate = format(new Date(clean.createAt), 'dd/MM/yyyy HH:mm');
-  const finishDate = format(new Date(clean.updateAt), 'dd/MM/yyyy HH:mm');
-
+  const startDate = format(new Date(clean.createdAt), 'dd/MM/yyyy HH:mm');
+  const finishDate = format(new Date(clean.updatedAt), 'dd/MM/yyyy HH:mm');
+  console.log(clean)
   function countEvidences() {
     let countEvidence = []
     let valuesToPush = [clean.entrance, clean.exit, clean.obs1, clean.obs2, clean.obs3].filter(value => value !== null && value !== undefined);
@@ -43,7 +43,7 @@ export default function Line({ clean }) {
       <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center">
 
-          {clean.place.name}
+          {clean.Place.name}
         </div>
       </td>
       {clean.status === "Pendente" ? (

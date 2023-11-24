@@ -16,20 +16,18 @@ function Login({ setIsLoggedIn }) {
 
   const navigate = useNavigate();
 
-  const [manager, setManager] = useState()
 
 
   async function handleSingIn(e) {
     e.preventDefault()
     setProcess(true)
     try {
-      const { data } = await Api.get('manager/', {
+      const { data } = await Api.get('manager/find', {
         params: {
-          name,
+          email: name,
           password
         }
       });
-
 
       localStorage.setItem('token', data.id);
       setProcess(false)
@@ -49,15 +47,15 @@ function Login({ setIsLoggedIn }) {
   }
 
   function sendEmail() {
-    if(emailRecovery == ''){
+    if (emailRecovery == '') {
       setAlert('error')
       return
     }
   }
 
-  useEffect(() =>{
-    setTimeout(() =>{setAlert(null)},5000)
-  },[alert])
+  useEffect(() => {
+    setTimeout(() => { setAlert(null) }, 5000)
+  }, [alert])
   return (
     <>
       {forgot && <div className="bg-indigo-900 text-center py-4 lg:px-4">
@@ -75,7 +73,7 @@ function Login({ setIsLoggedIn }) {
             <p>Ocorreu um erro inesperado, favor verificar email enviado e sua conexão com a internet.</p>
           </div>
         </div>
-      ) : alert == 'sucess' ?(
+      ) : alert == 'sucess' ? (
         <div className="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
           <div className="flex">
             <div className="py-1"><svg className="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" /></svg></div>
@@ -85,7 +83,7 @@ function Login({ setIsLoggedIn }) {
             </div>
           </div>
         </div>
-      ):null}
+      ) : null}
       <section className="flex flex-col md:flex-row h-screen items-center">
         {modal && <Modal />}
         <div className="bg-white-600 hidden lg:block w-fullh-screen items-align flex justify-center ">
@@ -114,7 +112,7 @@ function Login({ setIsLoggedIn }) {
                   focus:bg-white focus:outline-none" required />
               </div>
 
-             
+
 
 
               {process ? (
@@ -131,7 +129,7 @@ function Login({ setIsLoggedIn }) {
                 <button onClick={(e) => handleSingIn(e)} className="w-full block bg-blue-500 hover:bg-blue-400 focus:bg-blue-400 text-white font-semibold rounded-lg
                   px-4 py-3 mt-6">Log In</button>
               )}
-               <div className="text-right mt-2">
+              <div className="text-right mt-2">
                 <button onClick={(e) => handleForgot(e)} className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Esqueceu sua senha?</button>
               </div>
 
@@ -139,7 +137,7 @@ function Login({ setIsLoggedIn }) {
 
             <hr className="my-6 border-gray-300 w-full" />
 
-           
+
 
             <p className="mt-8">Precisa de uma conta? <a href="#" className="text-blue-500 hover:text-blue-700 font-semibold">Crie sua conta com um adm já cadastrado</a></p>
 

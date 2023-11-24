@@ -130,11 +130,11 @@ export default function Informations({ showModal, onClose, datas }) {
                     <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 sm:gap-y-16 lg:gap-x-8">
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Criado em:</dt>
-                        <dd className="mt-2 text-sm text-gray-500">{format(new Date(datas.createAt), 'dd/MM/yyyy HH:mm')}</dd>
+                        <dd className="mt-2 text-sm text-gray-500">{format(new Date(datas.createdAt), 'dd/MM/yyyy HH:mm')}</dd>
                       </div>
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Ultima atualização</dt>
-                        <dd className="mt-2 text-sm text-gray-500">{format(new Date(datas.updateAt), 'dd/MM/yyyy HH:mm')}</dd>
+                        <dd className="mt-2 text-sm text-gray-500">{format(new Date(datas.updatedAt), 'dd/MM/yyyy HH:mm')}</dd>
                       </div>
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Status</dt>
@@ -142,7 +142,7 @@ export default function Informations({ showModal, onClose, datas }) {
                       </div>
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Ambiente</dt>
-                        <dd className="mt-2 text-sm text-gray-500">{datas.place.name}</dd>
+                        <dd className="mt-2 text-sm text-gray-500">{datas.Place.name}</dd>
                       </div>
                     </dl>
                   </div>

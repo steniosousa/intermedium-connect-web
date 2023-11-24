@@ -27,7 +27,7 @@ export default function Schudeles({ showModal, onClose, datas }) {
 
   async function retriveDatas() {
     try {
-      const { data } = await Api.get('/schedule/', { params: { userId: datas.id } })
+      const { data } = await Api.get('/schedule/recover', { params: { userId: datas.id } })
       setSchudele(data)
     }
     catch (error) {

@@ -40,13 +40,12 @@ export default function Config({ showModal, onClose, companyId }) {
 
   async function retriveDatas() {
     setLoading(true)
-
     try {
       const [object, place, users, company] = await Promise.all([
-        Api.get('object', { data: { companyId: companyId.companys.id } }),
-        Api.get('place', { data: { companyId: companyId.companys.id } }),
-        Api.get('/user/allUsers', { params: { id } }),
-        Api.get('company/all')
+        Api.get('objects/recover', { params: { companyId: companyId.companys.id } }),
+        Api.get('place/recover', { params: { companyId: companyId.companys.id } }),
+        Api.get('/user/recover', { params: { companyId: companyId.companys.id } }),
+        Api.get('companies/recover')
       ]);
       setLoading(false)
       setObjects(object.data)
@@ -67,9 +66,8 @@ export default function Config({ showModal, onClose, companyId }) {
       setLoading(true)
       let params = {}
       params[`${route}Id`] = item
-
       try {
-        await Api.delete(`/${selectArgFromCreate}`, {
+        await Api.delete(`${selectArgFromCreate}/delete`, {
           params
         })
         setMessage('Deletado com sucesso')
@@ -91,12 +89,13 @@ export default function Config({ showModal, onClose, companyId }) {
     setFixObj([])
     setCheck([])
     setCreate(false)
+    setSelectArgFromCreate(routeCurrent)
     datas.map((item) => {
       let obj = {};
       obj['id'] = item.id;
       obj['name'] = item.name || '';
       obj['hash'] = item.loginHash || ''
-      obj['status'] = item.active || ''
+      obj['role'] = item.role || ''
       setFixObj((oldstate) => [...oldstate, obj])
     })
 
@@ -115,11 +114,10 @@ export default function Config({ showModal, onClose, companyId }) {
     const send = {
       companyId: companyId.companys.id,
       name: nameOfCreation,
-      password: "Intermedium"
     }
 
     try {
-      await Api.post(selectArgFromCreate, send)
+      await Api.post(`${selectArgFromCreate}/create`, send)
       setSucess('sucess')
       setMessage('Criação bem sucedida!')
       setLoading(false)
@@ -207,24 +205,24 @@ export default function Config({ showModal, onClose, companyId }) {
                     <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Criação de:</label>
                     <select selected onChange={(value) => setSelectArgFromCreate(value.target.value)} id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                       <option hidden  >Selecione</option>
-                      <option value="object">Objetos</option>
+                      <option value="objects">Objetos</option>
                       <option value="place">Ambientes</option>
-                      <option value="company">Empresa</option>
+                      <option value="companies">Empresa</option>
                       <option value="manager">Administrador</option>
                     </select>
                     {selectArgFromCreate == 'manager' ? (
-                       <select selected id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                       <option hidden>Selecione a empresa</option>
-                       {companys.map((item) =>{
-                        return(
-                          <option value="Administrador">{item.name}</option>
+                      <select selected id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option hidden>Selecione a empresa</option>
+                        {companys.map((item) => {
+                          return (
+                            <option value="Administrador">{item.name}</option>
 
-                        )
-                       })}
-                     </select>
+                          )
+                        })}
+                      </select>
                     ) : null}
                     <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe um nome" />
-                   
+
                     <div className='m-6'>
                       <button onClick={handleCreation} type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>
                     </div>
@@ -266,16 +264,16 @@ export default function Config({ showModal, onClose, companyId }) {
                           <li >
                             <a href="#" className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">CONFIGURAÇÕES</a>
                           </li>
-                          <li onClick={() => handleSelect(users, 'users')}>
+                          <li onClick={() => handleSelect(users, 'user')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" aria-current="page">Usuários</a>
                           </li>
-                          <li onClick={() => handleSelect(objects, 'object')}>
+                          <li onClick={() => handleSelect(objects, 'objects')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Objetos</a>
                           </li>
                           <li onClick={() => handleSelect(places, 'place')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Ambientes</a>
                           </li>
-                          <li onClick={() => handleSelect(companys, 'company')}>
+                          <li onClick={() => handleSelect(companys, 'companies')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Empresas</a>
 
                           </li>
@@ -288,7 +286,7 @@ export default function Config({ showModal, onClose, companyId }) {
                   </nav>
                   {usersEdit && <Modal userId={check} closeModal={() => {
                     setUsersEdit(false)
-                  }}/>}
+                  }} />}
                   <div className='flex flex-row my-8 justify-between w-full '>
                     {fixObj.length != 0 ? (
                       <div className='flex flex-col'>
@@ -358,7 +356,7 @@ export default function Config({ showModal, onClose, companyId }) {
                                   {item.hash}
                                 </td>
                                 <td className="px-6 py-4">
-                                  {item.status}
+                                  {item.role}
                                 </td>
                                 <td>
                                   {
