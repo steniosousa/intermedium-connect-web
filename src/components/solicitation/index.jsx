@@ -3,12 +3,16 @@ import { Dialog, Transition } from '@headlessui/react';
 import React from 'react';
 import Api from '../../api/service';
 import Alert from '../alert';
+import Select from 'react-select'
+import Calendario from '../calendar/calendario';
 
 export default function Solicitation({ showModal, onClose, datas }) {
   const [objectsOptions, setObjectsOptions] = useState([])
   const [placesOptions, setPlacesOptions] = useState([])
   const [selectForSend, setSelectForSend] = useState([])
   const [placesForSend, setPlacesForSend] = useState('')
+
+
   const [daysOfWeek, setDaysOfWeek] = useState([
     { dia: "Segunda-feira", value: 1 },
     { dia: "Terça-feira", value: 2 },
@@ -55,11 +59,16 @@ export default function Solicitation({ showModal, onClose, datas }) {
         })
       ]);
 
-      setObjectsOptions(object.data);
+      const objectForSelect = object.data.map((item) => {
+        return { label: item.name, value: item.id }
+      })
+      setObjectsOptions(objectForSelect);
+
       setPlacesOptions(place.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    catch (error) {
-    }
+
 
 
 
@@ -72,13 +81,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
   }, [])
 
 
-  const handleObjectChange = (event) => {
-    if (event.target.value == '') return
-    const exist = selectForSend.find((item) => item.id == event.target.value)
-    if (exist) return
-    const idSelect = objectsOptions.find((item) => item.id == event.target.value)
-    setSelectForSend([...selectForSend, idSelect])
-  };
   const handlePlacesChange = (event) => {
     if (event.target.value == '') return
     const idSelect = placesOptions.find((item) => item.id == event.target.value)
@@ -86,39 +88,35 @@ export default function Solicitation({ showModal, onClose, datas }) {
   }
 
 
-  function handleExclusion(item) {
-    const exclusion = selectForSend.filter((object) => object.id != item.id)
-    setSelectForSend(exclusion)
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault()
     setShowAlert(true)
     let route;
 
-    if (placesForSend === '' || selectForSend.length == 0) {
+    if (placesForSend === '') {
       setShowAlert(false)
       setSucess('error')
       return
-    }
-    const objects = []
-
-    for (const object of selectForSend) {
-      objects.push(object.id)
     }
 
 
     var d = new Date();
     d.setDate(d.getDate() + (parseInt(daySelected) + 7 - d.getDay()) % 7);
     d.setHours(parseInt(horsSelected), 0, 0, 0)
+    let objectsId = []
+    selectForSend.map((item) => {
+      objectsId.push(item[0].value)
+    })
+
 
     const send = {
       placeId: placesForSend,
-      objectsId: objects,
+      objectsId,
       userId: datas.id,
       repeatable: repeat,
       eventDate: automated ? d : new Date(),
     }
+    console.log(send)
     if (automated) {
       route = 'schedule/create'
     } else {
@@ -236,68 +234,63 @@ export default function Solicitation({ showModal, onClose, datas }) {
                           <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
                             Objeto:
                           </label>
-                          <select className="border rounded-md px-3 py-2 w-full bg-gray-600 text-white" onChange={handleObjectChange}>
-                            <option value="" >
-                              Selecione um objeto
-                            </option>
-                            {objectsOptions.map((item) => {
-                              return (
-                                <option key={item.id} value={item.id}>{item.name}</option>
+                          <Select
+                            isMulti
+                            name="Objetos"
+                            options={objectsOptions}
+                            onChange={(item) => setSelectForSend((oldState) => [...oldState, item])}
+                            className="border rounded-md px-3 py-2 w-full bg-gray-600 text-black"
+                            classNamePrefix="select"
+                          />
 
-                              )
-                            })}
-                          </select>
+
                         </div>
 
                         <Dialog.Title as="h3" className="text-base leading-6 text-gray-900 flex flex-row items-center justify-around m-4 ">
-                          {selectForSend.map((item) => {
-                            return (
-                              <button type='button' className="bg-red-600 text-white font-semibold px-4 py-2 rounded-full cursor-pointer" key={item.id} onClick={() => handleExclusion(item)}>
-                                {item.name}
-                              </button>
-                            )
-                          })}
+
                         </Dialog.Title>
                         {automated ? (
-                          <div className='flex flex-row items-center'>
-                            <div className="mb-4">
-                              <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
-                                Dia da semana:
-                              </label>
-                              <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectDay}>
-                                <option value="" >
-                                  Dia
-                                </option>
-                                {daysOfWeek.map((item) => {
-                                  return (
-                                    <option className="" value={item.value}>{item.dia}</option>
+                          <Calendario />
 
-                                  )
-                                })}
-                              </select>
-                            </div>
-                            <div className="mb-4">
-                              <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
-                                Horário:
-                              </label>
-                              <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectHors}>
-                                <option className="bg-gray-600 text-white" value="">
-                                  Horário
-                                </option>
-                                {horsOfDay.map((item) => {
-                                  return (
-                                    <option className="bg-gray-600 text-white" value={item}>{item}</option>
+                          // <div className='flex flex-row items-center'>
+                          //   <div className="mb-4">
+                          //     <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
+                          //       Dia da semana:
+                          //     </label>
+                          //     <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectDay}>
+                          //       <option value="" >
+                          //         Dia
+                          //       </option>
+                          //       {/* {daysOfWeek.map((item) => {
+                          //         return (
+                          //           <option className="" value={item.value}>{item.dia}</option>
 
-                                  )
-                                })}
-                              </select>
+                          //         )
+                          //       })} */}
+                          //     </select>
+                          //   </div>
+                          //   <div className="mb-4">
+                          //     <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
+                          //       Horário:
+                          //     </label>
+                          //     <select className="border rounded-md px-3 py-2 w-40 bg-gray-600 text-white" onChange={handleSelectHors}>
+                          //       <option className="bg-gray-600 text-white" value="">
+                          //         Horário
+                          //       </option>
+                          //       {horsOfDay.map((item) => {
+                          //         return (
+                          //           <option className="bg-gray-600 text-white" value={item}>{item}</option>
 
-                            </div>
-                            <div className="flex flex-col  items-center m-4 dark:border-gray-700">
-                              <input onChange={handleRepeat} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                              <label for="bordered-checkbox-1" className=" text-sm font-medium text-gray-600 dark:text-gray-600">Repeat</label>
-                            </div>
-                          </div>
+                          //         )
+                          //       })}
+                          //     </select>
+
+                          //   </div>
+                          //   <div className="flex flex-col  items-center m-4 dark:border-gray-700">
+                          //     <input onChange={handleRepeat} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                          //     <label for="bordered-checkbox-1" className=" text-sm font-medium text-gray-600 dark:text-gray-600">Repeat</label>
+                          //   </div>
+                          // </div>
 
 
                         ) : null}
