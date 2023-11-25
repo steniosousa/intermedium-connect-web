@@ -36,27 +36,30 @@ export default function Schudeles({ showModal, onClose, datas }) {
 
   }
 
- 
+
 
 
   async function handleDeleteSchudele(schudeleId) {
-    try{
-      await Api.post('/schedule/delete',{
-       schudeleId
-     })
-     retriveDatas()
-   }catch(error){
-   }
+
+    try {
+      await Api.delete('/schedule/delete', {
+        params: {
+          scheduleId: schudeleId.id
+        }
+      })
+      retriveDatas()
+    } catch (error) {
+    }
 
   }
 
-  async function handleDisableOrEnableSchudele(schudeleId){
-    try{
-       await Api.post('/schedule/edit',{
-        schudeleId
+  async function handleDisableOrEnableSchudele(schudeleId) {
+    try {
+      await Api.post('/schedule/edit', {
+          scheduleId: schudeleId.id
       })
       retriveDatas()
-    }catch(error){
+    } catch (error) {
     }
   }
   function openAlert() {
@@ -115,7 +118,7 @@ export default function Schudeles({ showModal, onClose, datas }) {
                   </div>
 
                 ) : null}
-                <div className=''> 
+                <div className=''>
                   <button type="button" onClick={handleClose} className="absolute right-4 top-4 text-red-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8">
                     <span className="sr-only">Close</span>
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
@@ -131,10 +134,10 @@ export default function Schudeles({ showModal, onClose, datas }) {
                     {schudele.map((item) => {
                       return (
                         <dl className="mt-16 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-5 sm:gap-y-16 lg:gap-x-8" key={item.id}>
-                          <div>{item.deactivatedAt ? (
-                            <div className='h-8 w-4 bg-red-600'></div>
-                            ) : (
-                            <div className='h-8 w-4 bg-green-600 items-center flex'></div>
+                          <div>{item.deactivatedAt == null ? (
+                            <div className='h-8 w-4 bg-green-600'></div>
+                          ) : (
+                            <div className='h-8 w-4 bg-red-600 items-center flex'></div>
                           )}</div>
                           <div className="border-t border-gray-200 pt-4 ">
                             <dt className="font-medium text-gray-900">AGENDADO PARA:</dt>
@@ -150,12 +153,12 @@ export default function Schudeles({ showModal, onClose, datas }) {
                             <dd className="mt-2 text-sm text-white">{item.repeatable ? 'SIM' : "NÃO"}</dd>
                           </div>
                           <div className='flex flex-col justify-center gap-2'>
-                            <button className='text-red-600' onClick={() => handleDeleteSchudele(item.id)}>EXCLUIR</button>
+                            <button className='text-red-600' onClick={() => handleDeleteSchudele(item)}>EXCLUIR</button>
                             <div>{item.deactivatedAt ? (
-                              <button onClick={() =>handleDisableOrEnableSchudele(item.id)}>ATIVAR</button>
-                              ) : (
-                            <button onClick={() => handleDisableOrEnableSchudele(item.id)}>DESATIVAR</button>
-                          )}</div>
+                              <button onClick={() => handleDisableOrEnableSchudele(item)}>ATIVAR</button>
+                            ) : (
+                              <button onClick={() => handleDisableOrEnableSchudele(item)}>DESATIVAR</button>
+                            )}</div>
                           </div>
                         </dl>
                       )
