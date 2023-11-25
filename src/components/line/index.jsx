@@ -11,7 +11,6 @@ export default function Line({ clean }) {
 
   const startDate = format(new Date(clean.createdAt), 'dd/MM/yyyy HH:mm');
   const finishDate = format(new Date(clean.updatedAt), 'dd/MM/yyyy HH:mm');
-  console.log(clean)
   function countEvidences() {
     let countEvidence = []
     let valuesToPush = [clean.entrance, clean.exit, clean.obs1, clean.obs2, clean.obs3].filter(value => value !== null && value !== undefined);

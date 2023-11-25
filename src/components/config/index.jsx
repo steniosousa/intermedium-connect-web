@@ -326,7 +326,7 @@ export default function Config({ showModal, onClose, companyId }) {
                                 HASH
                               </th>
                               <th scope="col" className="px-6 py-3">
-                                Category
+                                POSIÇÃO
                               </th>
                               <th scope="col" className="px-6 py-3">
 
