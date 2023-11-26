@@ -19,7 +19,7 @@ export default function Perfil({ showModal, onClose, admin }) {
             denyButtonText: 'Cancelar',
             confirmButtonText: 'Confirmar'
         })
-        if(confirm.isDenied) return
+        if (confirm.isDenied) return
         try {
             await Api.post('email/receiver', {
                 email: admin.email
@@ -50,15 +50,16 @@ export default function Perfil({ showModal, onClose, admin }) {
 
 
     async function handleSendDatas() {
-        
-        
+
+
 
         const send = {
             id: admin.id,
-            codigo
+            codigo,
+            firstAcess: false,
         }
 
-        
+
         if (name != '' && name) {
             send['name'] = name
         }
@@ -69,7 +70,7 @@ export default function Perfil({ showModal, onClose, admin }) {
             send['password'] = newPass
 
         }
-        if(!send.name  && !send.email && !send.password){
+        if (!send.name && !send.email && !send.password) {
             await Swal.fire({
                 icon: 'info',
                 title: 'Preencha o campo de alteração',
@@ -93,7 +94,7 @@ export default function Perfil({ showModal, onClose, admin }) {
         if (confirm.isDenied) return
 
         try {
-         
+
             await Api.post('manager/edit', send)
             await Swal.fire({
                 icon: 'success',
@@ -104,7 +105,7 @@ export default function Perfil({ showModal, onClose, admin }) {
                 denyButtonText: 'Cancelar',
                 confirmButtonText: 'Confirmar'
             })
-           
+
         } catch {
             await Swal.fire({
                 icon: 'error',
