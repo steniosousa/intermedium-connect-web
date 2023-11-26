@@ -30,9 +30,10 @@ export default function Calendario({ catchHors }) {
 
   const handleSelectSlot = ({ start, end }) => {
     const newEvent = { title: 'Marked', start, end };
-    if (new Date(start).getDay() != end.getDay() || start.getDay() < new Date().getDay()) {
+    if (new Date(start).getDay() != end.getDay() || end < new Date()) {
       return
     }
+
 
     const verify = events.some((item) =>
       new Date(item.start).getTime() == new Date(start).getTime())

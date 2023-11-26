@@ -109,7 +109,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
     } else {
       route = 'cleaning/create'
     }
-    console.log(send)
     try {
       await Api.post(route, send)
       setSucess('sucess')
@@ -123,7 +122,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
   };
 
   function catchHors(horsArray) {
-    console.log(horsArray)
     setHorsSelected(horsArray)
   }
   function openAlert() {
