@@ -16,6 +16,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
   const [selectArgFromCreate, setSelectArgFromCreate] = useState('')
   const [nameOfCreation, setNameOfCreation] = useState('')
+  const [emailOfCreation, setEmailOfCreation] = useState('')
   const [fixObj, setFixObj] = useState([])
 
   const [route, setRoute] = useState('')
@@ -105,7 +106,7 @@ export default function Config({ showModal, onClose, companyId }) {
   }
   async function handleCreation() {
     setLoading(true)
-    if (nameOfCreation === '') {
+    if (nameOfCreation === '' || emailOfCreation === '') {
       setLoading(false)
       setSucess('error')
       setMessage('Nome da criação vazio')
@@ -114,6 +115,7 @@ export default function Config({ showModal, onClose, companyId }) {
     const send = {
       companyId: companyId.companys.id,
       name: nameOfCreation,
+      email: emailOfCreation
     }
 
     try {
@@ -211,17 +213,25 @@ export default function Config({ showModal, onClose, companyId }) {
                       <option value="manager">Administrador</option>
                     </select>
                     {selectArgFromCreate == 'manager' ? (
-                      <select selected id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                        <option hidden>Selecione a empresa</option>
-                        {companys.map((item) => {
-                          return (
-                            <option value="Administrador">{item.name}</option>
+                      <>
+                        <select selected id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                          <option hidden>Selecione a empresa</option>
+                          {companys.map((item) => {
+                            return (
+                              <option value="Administrador">{item.name}</option>
 
-                          )
-                        })}
-                      </select>
-                    ) : null}
-                    <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe um nome" />
+                            )
+                          })}
+                        </select>
+                        <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="my-4 rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe o nome" />
+                        <input onChange={(value) => setEmailOfCreation(value.target.value)} type="email" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe o email" />
+
+                      </>
+
+                    ) : (
+                      <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe o nome" />
+
+                    )}
 
                     <div className='m-6'>
                       <button onClick={handleCreation} type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>

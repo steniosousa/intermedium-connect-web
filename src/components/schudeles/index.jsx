@@ -1,10 +1,8 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect,  useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
-import { format } from "date-fns";
 import Alert from '../alert';
 
-import suposicao from './download.jpeg'
 
 export default function Schudeles({ showModal, onClose, datas }) {
 
