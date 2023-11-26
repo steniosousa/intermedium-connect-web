@@ -3,12 +3,11 @@ import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import Alert from '../alert';
 import Modal from '../popup';
+import Swal from 'sweetalert2'
 
 export default function Config({ showModal, onClose, companyId }) {
 
   const [loading, setLoading] = useState(null)
-  const [sucess, setSucess] = useState(null)
-  const [message, setMessage] = useState('')
   const [objects, setObjects] = useState([])
   const [places, setPlaces] = useState([])
   const [users, setUsers] = useState([])
@@ -56,13 +55,34 @@ export default function Config({ showModal, onClose, companyId }) {
     }
     catch (error) {
       setLoading(false)
-      setSucess('error')
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Erro ao recuperar dados',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
     }
 
   }
 
 
   async function deletion() {
+    const confirm = await Swal.fire({
+      icon: 'info',
+      title: 'Deseja realizar a deleção?',
+      showDenyButton: true,
+      showCancelButton: false,
+      showConfirmButton: true,
+      denyButtonText: 'Cancelar',
+      confirmButtonText: 'Confirmar'
+    })
+    if (confirm.isDenied) return
+
+
     check.map(async (item) => {
       setLoading(true)
       let params = {}
@@ -71,13 +91,26 @@ export default function Config({ showModal, onClose, companyId }) {
         await Api.delete(`${selectArgFromCreate}/delete`, {
           params
         })
-        setMessage('Deletado com sucesso')
-        setSucess('sucess')
-        retriveDatas()
+        await Swal.fire({
+          icon: 'success',
+          title: 'Deleção bem sucedida',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+        await retriveDatas()
       } catch (error) {
-        setLoading(false)
-        setMessage('Já sendo usado em alguma solicitação')
-        setSucess('error')
+        await Swal.fire({
+          icon: 'error',
+          title: 'Não foi possível deletar',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
       }
     })
   }
@@ -86,7 +119,6 @@ export default function Config({ showModal, onClose, companyId }) {
   function handleSelect(datas, routeCurrent) {
     setRoute(routeCurrent)
     retriveDatas()
-    setSucess(null)
     setFixObj([])
     setCheck([])
     setCreate(false)
@@ -105,11 +137,29 @@ export default function Config({ showModal, onClose, companyId }) {
     loading(!showAlert)
   }
   async function handleCreation() {
+    const confirm = await Swal.fire({
+      icon: 'info',
+      title: `Deseja cadastrar ${selectArgFromCreate}?`,
+      showDenyButton: true,
+      showCancelButton: false,
+      showConfirmButton: true,
+      denyButtonText: 'Cancelar',
+      confirmButtonText: 'Confirmar'
+    })
+    if (confirm.isDismissed) return
     setLoading(true)
-    if (nameOfCreation === '' || emailOfCreation === '') {
+    if (nameOfCreation === '') {
+      await Swal.fire({
+        icon: 'info',
+        title: 'Campo de nome vazio',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
       setLoading(false)
-      setSucess('error')
-      setMessage('Nome da criação vazio')
+
       return
     }
     const send = {
@@ -120,14 +170,29 @@ export default function Config({ showModal, onClose, companyId }) {
 
     try {
       await Api.post(`${selectArgFromCreate}/create`, send)
-      setSucess('sucess')
-      setMessage('Criação bem sucedida!')
       setLoading(false)
+      await Swal.fire({
+        icon: 'success',
+        title: 'Criação bem sucessedida',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
     }
     catch (error) {
-      setMessage('Erro ao efetuar criação!')
-      setSucess('error')
+      await Swal.fire({
+        icon: 'error',
+        title: 'Erro ao efetuar criação',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
       setLoading(false)
+
     }
 
 
@@ -145,7 +210,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
   useEffect(() => {
     retriveDatas()
-  }, [])
+  }, [route])
 
   return (
     <Transition.Root show={showModal} as={Fragment}>
@@ -178,27 +243,7 @@ export default function Config({ showModal, onClose, companyId }) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-gray-900 text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
-                {sucess == 'sucess' ? (
-                  <div role="alert my-8">
-                    <div className="bg-green-500 text-white font-bold rounded-t   my-16">
-                      Sucesso!
-                      <div className="border border-t-0 border-green-400 rounded-b bg-green-100  text-black ">
-                        <p>{message}</p>
-                      </div>
-                    </div>
-                  </div>
 
-                ) : sucess == 'error' ? (
-                  <div role="alert" className='h-8'>
-                    <div className="bg-red-500 text-white font-bold rounded-t   my-16">
-                      Erro!
-                      <div className="border border-t-0 border-red-400 rounded-b bg-red-100  text-red-700 ">
-                        <p>{message}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                ) : null}
 
                 {create ? (
 

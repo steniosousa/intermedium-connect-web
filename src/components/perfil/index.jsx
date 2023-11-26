@@ -10,9 +10,28 @@ export default function Perfil({ showModal, onClose, admin }) {
     const [codigo, setCodigo] = useState(null)
 
     async function handleReceivePassword() {
+        const confirm = await Swal.fire({
+            icon: 'info',
+            title: 'Deseja receber o código de recuperação em seu email?',
+            showDenyButton: true,
+            showCancelButton: false,
+            showConfirmButton: true,
+            denyButtonText: 'Cancelar',
+            confirmButtonText: 'Confirmar'
+        })
+        if(confirm.isDismissed) return
         try {
             await Api.post('email/receiver', {
                 email: admin.email
+            })
+            await Swal.fire({
+                icon: 'success',
+                title: 'Código de recuperação enviado ao email cadastrado',
+                showDenyButton: true,
+                showCancelButton: false,
+                showConfirmButton: true,
+                denyButtonText: 'Cancelar',
+                confirmButtonText: 'Confirmar'
             })
         } catch {
             await Swal.fire({
@@ -31,21 +50,15 @@ export default function Perfil({ showModal, onClose, admin }) {
 
 
     async function handleSendDatas() {
-        const confirm = await Swal.fire({
-            icon: 'warning',
-            title: 'Confirmar alteração?',
-            showDenyButton: true,
-            showCancelButton: false,
-            showConfirmButton: true,
-            denyButtonText: 'Cancelar',
-            confirmButtonText: 'Confirmar'
-        })
-        if (confirm.isDenied) return
+        
+        
 
         const send = {
             id: admin.id,
             codigo
         }
+
+        
         if (name != '' && name) {
             send['name'] = name
         }
@@ -56,10 +69,33 @@ export default function Perfil({ showModal, onClose, admin }) {
             send['password'] = newPass
 
         }
+        if(!send.name  && !send.email && !send.password){
+            await Swal.fire({
+                icon: 'info',
+                title: 'Preencha o campo de alteração',
+                showDenyButton: true,
+                showCancelButton: false,
+                showConfirmButton: true,
+                denyButtonText: 'Cancelar',
+                confirmButtonText: 'Confirmar'
+            })
+            return
+        }
+        const confirm = await Swal.fire({
+            icon: 'info',
+            title: 'Confirmar alteração?',
+            showDenyButton: true,
+            showCancelButton: false,
+            showConfirmButton: true,
+            denyButtonText: 'Cancelar',
+            confirmButtonText: 'Confirmar'
+        })
+        if (confirm.isDenied) return
 
         try {
+         
             await Api.post('manager/edit', send)
-            const confirm = await Swal.fire({
+            await Swal.fire({
                 icon: 'success',
                 title: 'Relogue para ativar as alterações',
                 showDenyButton: true,
@@ -68,10 +104,11 @@ export default function Perfil({ showModal, onClose, admin }) {
                 denyButtonText: 'Cancelar',
                 confirmButtonText: 'Confirmar'
             })
+           
         } catch {
-            const confirm = await Swal.fire({
+            await Swal.fire({
                 icon: 'error',
-                title: !codigo ? "Cógico de recuperação em branco" : 'Não foi possível concluir alteração',
+                title: 'Não foi possível concluir alteração',
                 showDenyButton: true,
                 showCancelButton: false,
                 showConfirmButton: true,
@@ -82,6 +119,17 @@ export default function Perfil({ showModal, onClose, admin }) {
 
     }
 
+    async function cleanCode() {
+        await Swal.fire({
+            icon: 'error',
+            title: "Campo de Cógico de recuperação vazio",
+            showDenyButton: true,
+            showCancelButton: false,
+            showConfirmButton: true,
+            denyButtonText: 'Cancelar',
+            confirmButtonText: 'Confirmar'
+        })
+    }
     return (
         <Transition.Root show={showModal} as={Fragment}>
 
@@ -125,7 +173,6 @@ export default function Perfil({ showModal, onClose, admin }) {
                                                 Nome
                                             </label>
                                             <input onChange={(i) => setName(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={admin.name} />
-                                            {/* <p class="text-red-500 text-xs italic">Por favor, preencha este campo.</p> */}
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap -mx-3 mb-6 ">
@@ -143,7 +190,7 @@ export default function Perfil({ showModal, onClose, admin }) {
                                         </div>
                                         <div class="w-full px-3 mt-4">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                                                Código recebido por email
+                                                Código de recuperação
                                             </label>
                                             <input onChange={(i) => setCodigo(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="text" placeholder="bba67e47-7114-4df6-a3ab-6d998ff9fc36" />
                                             <p class="text-gray-600 text-xs italic">Só será realizado as alterações caso campo preenchido</p>
@@ -151,11 +198,18 @@ export default function Perfil({ showModal, onClose, admin }) {
                                     </div>
                                     <div class="flex items-center justify-between">
                                         <button class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" type='button' onClick={handleReceivePassword}>
-                                            Receber token
+                                            Receber Código
                                         </button>
-                                        <button onClick={handleSendDatas} class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                                            Enviar
-                                        </button>
+                                        {codigo ? (
+                                            <button onClick={handleSendDatas} class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                                                Enviar
+                                            </button>
+
+                                        ) : (
+                                            <button onClick={cleanCode} class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                                                Enviar
+                                            </button>
+                                        )}
                                     </div>
                                 </form>
                             </Dialog.Panel>

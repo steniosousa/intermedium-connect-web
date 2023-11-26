@@ -17,6 +17,7 @@ export function Center({ user }) {
   }
 
   async function copyHash() {
+    console.log(user)
     const copiar = user.loginHash
     try {
       await navigator.clipboard.writeText(copiar);
@@ -86,13 +87,7 @@ export function Center({ user }) {
       <div className="sm:p-7 p-4">
         <div className="flex w-full items-center mb-7">
           <div className="ml-auto text-gray-500 text-xs sm:inline-flex hidden items-center">
-            {user && user.active ? (
-              <span className="text-white inline-flex mr-2 bg-green-900 p-8 items-center h-8 w-8 justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">Ativo</span>
-
-            ) : (
-              <span className="text-white inline-flex mr-2 bg-orange-900 p-8 items-center h-8 w-8 justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">Inativo</span>
-
-            )}
+            <button className="text-white inline-flex  bg-green-900 px-16 items-center h-8 w-8 text-base justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">Relatório</button>
           </div>
         </div>
         {dataLine.length == 0 ? (
