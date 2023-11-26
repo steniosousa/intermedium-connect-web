@@ -13,7 +13,16 @@ export default function Modal({ closeModal, userId }) {
 
    async function editValue() {
         try{
-           
+            const confirm = await Swal.fire({
+                icon: 'warning',
+                title: 'Confirmar alteração?',
+                showDenyButton: true,
+                showCancelButton: false,
+                showConfirmButton: true,
+                denyButtonText: 'Cancelar',
+                confirmButtonText: 'Confirmar'
+            })
+            if(confirm.isDenied) return
             await Api.post('user/update', {
                 params: {userId:userId[0]},
                 body: {active: value == 'active' ? true : false}

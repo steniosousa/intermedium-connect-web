@@ -146,7 +146,7 @@ export default function Config({ showModal, onClose, companyId }) {
       denyButtonText: 'Cancelar',
       confirmButtonText: 'Confirmar'
     })
-    if (confirm.isDismissed) return
+    if (confirm.isDenied) return
     setLoading(true)
     if (nameOfCreation === '') {
       await Swal.fire({

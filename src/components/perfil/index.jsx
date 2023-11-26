@@ -19,7 +19,7 @@ export default function Perfil({ showModal, onClose, admin }) {
             denyButtonText: 'Cancelar',
             confirmButtonText: 'Confirmar'
         })
-        if(confirm.isDismissed) return
+        if(confirm.isDenied) return
         try {
             await Api.post('email/receiver', {
                 email: admin.email
