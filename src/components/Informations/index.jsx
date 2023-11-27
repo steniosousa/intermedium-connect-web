@@ -5,9 +5,10 @@ import { format } from "date-fns";
 import Swal from 'sweetalert2'
 
 import suposicao from './download.jpeg'
+import Avaliation from './avaliation';
 
 export default function Informations({ showModal, onClose, datas }) {
-
+  const [avaliation, setAvaliation] = useState(false)
   const handleClose = () => {
     onClose();
   };
@@ -48,6 +49,10 @@ export default function Informations({ showModal, onClose, datas }) {
       denyButtonText: 'Cancelar',
       confirmButtonText: 'Reabrir'
     })
+  }
+
+  function openAvaliation() {
+    setAvaliation(!avaliation)
   }
 
 
@@ -161,8 +166,9 @@ export default function Informations({ showModal, onClose, datas }) {
                   </div>
                 </div>
                 <button onClick={() => handleExclusion()} className="h-8 px-3 rounded-md shadow text-white bg-red-500 m-4">Excluir</button>
-                <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={reopen}>Reabrir</button>
-
+                <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={reopen}>Limpar Novamente</button>
+                <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={openAvaliation}>Avaliação</button>
+                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} />}
               </Dialog.Panel>
             </Transition.Child>
           </div>

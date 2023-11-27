@@ -132,27 +132,13 @@ export default function Home() {
               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
             </svg>
           </button>
-          <button className="h-10 w-12 dark:text-gray-500 rounded-md flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="h-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-              <line x1="12" y1="11" x2="12" y2="17"></line>
-              <line x1="9" y1="14" x2="15" y2="14"></line>
-            </svg>
-          </button>
-          <button className="h-10 w-12 dark:text-gray-500 rounded-md flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="h-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="7" height="7"></rect>
-              <rect x="14" y="3" width="7" height="7"></rect>
-              <rect x="14" y="14" width="7" height="7"></rect>
-              <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
-          </button>
+
         </div>
       </div>
       <div className="flex-grow overflow-hidden h-full flex flex-col">
         <div className="h-16 lg:flex w-full border-b border-gray-200 dark:border-gray-800 hidden px-10">
           <div className="flex h-full text-gray-600 dark:text-gray-400">
-            < button className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8">Intermedium</button>
+            < button className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8 text-lg">Intermedium</button>
           </div>
 
           <div className="ml-auto flex items-center space-x-7">
