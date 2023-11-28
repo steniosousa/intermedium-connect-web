@@ -5,6 +5,7 @@ import Api from '../../api/service';
 import Alert from '../alert';
 import Select from 'react-select'
 import Calendario from '../calendar/calendario';
+import Swal from 'sweetalert2'
 
 export default function Solicitation({ showModal, onClose, datas }) {
   const [objectsOptions, setObjectsOptions] = useState([])
@@ -16,7 +17,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
 
 
   const [repeat, setRepeat] = useState(false)
-  const [sucess, setSucess] = useState(null)
 
 
   const [automated, setAutomated] = useState(false)
@@ -53,7 +53,15 @@ export default function Solicitation({ showModal, onClose, datas }) {
 
       setPlacesOptions(place.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      await Swal.fire({
+        icon: 'error',
+        title: 'Erro ao recuperar dados',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
     }
 
 
@@ -68,6 +76,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
   }, [])
 
 
+
   const handlePlacesChange = (event) => {
     if (event.target.value == '') return
     const idSelect = placesOptions.find((item) => item.id == event.target.value)
@@ -77,19 +86,35 @@ export default function Solicitation({ showModal, onClose, datas }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    setShowAlert(true)
+    const confirm = await Swal.fire({
+      icon: 'info',
+      title: 'Deseja criar uma solicitação para esse usuário?',
+      showDenyButton: true,
+      showCancelButton: false,
+      showConfirmButton: true,
+      denyButtonText: 'Cancelar',
+      confirmButtonText: 'Confirmar'
+    })
+    if (!confirm.isConfirmed) return
     let route;
 
-    if (placesForSend === '') {
-      setShowAlert(false)
-      setSucess('error')
+    if (placesForSend === '' && selectForSend.length == 0) {
+      await Swal.fire({
+        icon: 'info',
+        title: 'Verifique o ambiente e os objetos selecionados',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
       return
     }
 
 
 
-    const objectsId = selectForSend.map((item) => {
-      return item[0].value
+    const objectsId = selectForSend.map((item, indice) => {
+      return item[indice].value
     })
 
     const horsSelectedForSend = horsSelected.map((item) => {
@@ -111,12 +136,27 @@ export default function Solicitation({ showModal, onClose, datas }) {
     }
     try {
       await Api.post(route, send)
-      setSucess('sucess')
-      setShowAlert(false)
+      await Swal.fire({
+        icon: 'success',
+        title: 'Solicitação criada com sucesso!',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
     }
     catch (error) {
-      setSucess('error')
-      setShowAlert(false)
+      await Swal.fire({
+        icon: 'error',
+        title: 'Não foi possível criar a solicitação',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
+
     }
 
   };
@@ -151,23 +191,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
 
         <div className="fixed inset-0 z-10 overflow-y-auto ">
 
-          {sucess == 'sucess' ? (
-            <div className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
-              <p className="font-bold">Sucesso!</p>
-              <p className="text-sm">Sua solicitação foi criada com sucesso.</p>
-            </div>
 
-          ) : sucess == 'error' ? (
-            <div role="alert">
-              <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
-                Erro!
-              </div>
-              <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                <p>Algo de errado aconteceu na sua solicitação</p>
-              </div>
-            </div>
-
-          ) : null}
           <div className="flex min-h-full min-w-lg items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -232,7 +256,7 @@ export default function Solicitation({ showModal, onClose, datas }) {
                           <>
                             <Calendario catchHors={catchHors} />
                             <div className="flex flex-col  items-center m-4 dark:border-gray-700">
-                              <input onChange={() =>setRepeat(!repeat)} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                              <input onChange={() => setRepeat(!repeat)} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                               <label for="bordered-checkbox-1" className=" text-xl font-medium text-white ">REPETIR</label>
                             </div>
                           </>
