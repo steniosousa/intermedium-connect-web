@@ -12,7 +12,7 @@ export default function Config({ showModal, onClose, companyId }) {
   const [places, setPlaces] = useState([])
   const [users, setUsers] = useState([])
   const [companys, setCompanys] = useState([])
-  const [ epis, setEpis] = useState([])
+  const [epis, setEpis] = useState([])
 
   const [selectArgFromCreate, setSelectArgFromCreate] = useState('')
   const [nameOfCreation, setNameOfCreation] = useState('')
@@ -41,19 +41,21 @@ export default function Config({ showModal, onClose, companyId }) {
 
   async function retriveDatas() {
     setLoading(true)
-    console.log(companyId)
     try {
-      const [object, place, users, company] = await Promise.all([
+      const [object, place, users, company, epi] = await Promise.all([
         Api.get('objects/recover', { params: { companyId: companyId.companyId } }),
         Api.get('place/recover', { params: { companyId: companyId.companyId } }),
         Api.get('/user/recover', { params: { companyId: companyId.companyId } }),
-        Api.get('companies/recover')
+        Api.get('companies/recover'),
+        Api.get('/epis/recover', { params: { companyId: companyId.companyId } }),
       ]);
       setLoading(false)
       setObjects(object.data)
       setPlaces(place.data)
       setUsers(users.data)
       setCompanys(company.data)
+      console.log(epi)
+      setEpis(epi.data)
     }
     catch (error) {
       setLoading(false)
@@ -73,16 +75,30 @@ export default function Config({ showModal, onClose, companyId }) {
 
 
   async function deletion() {
-    const confirm = await Swal.fire({
-      icon: 'info',
-      title: 'Deseja realizar a deleção?',
-      showDenyButton: true,
-      showCancelButton: false,
-      showConfirmButton: true,
-      denyButtonText: 'Cancelar',
-      confirmButtonText: 'Confirmar'
-    })
-    if (confirm.isDenied) return
+    if (selectArgFromCreate == 'epis') {
+      const confirm = await Swal.fire({
+        icon: 'info',
+        title: 'Deseja realizar a deleção?',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
+      if (!confirm.isConfirmed) return
+    } else {
+
+      const confirm = await Swal.fire({
+        icon: 'info',
+        title: 'Deseja realizar a deleção?',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
+      if (!confirm.isConfirmed) return
+    }
 
 
     check.map(async (item) => {
@@ -148,7 +164,7 @@ export default function Config({ showModal, onClose, companyId }) {
       denyButtonText: 'Cancelar',
       confirmButtonText: 'Confirmar'
     })
-    if (confirm.isDenied) return
+    if (!confirm.isConfirmed) return
     setLoading(true)
     if (nameOfCreation === '') {
       await Swal.fire({
@@ -165,11 +181,10 @@ export default function Config({ showModal, onClose, companyId }) {
       return
     }
     const send = {
-      companyId: companyId.companys.id,
+      companyId: companyId.companyId,
       name: nameOfCreation,
       email: emailOfCreation
     }
-
     try {
       await Api.post(`${selectArgFromCreate}/create`, send)
       setLoading(false)
@@ -257,6 +272,7 @@ export default function Config({ showModal, onClose, companyId }) {
                       <option value="objects">Objetos</option>
                       <option value="place">Ambientes</option>
                       <option value="companies">Empresa</option>
+                      <option value='epis'>EPI</option>
                       <option value="manager">Administrador</option>
                     </select>
                     {selectArgFromCreate == 'manager' ? (
@@ -336,7 +352,7 @@ export default function Config({ showModal, onClose, companyId }) {
                           </li>
 
                           <li onClick={() => handleSelect(epis, 'epis')}>
-                            <a  class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">EPIs</a>
+                            <a class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">EPIs</a>
 
                           </li>
                           <li >

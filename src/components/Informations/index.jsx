@@ -14,7 +14,6 @@ export default function Informations({ showModal, onClose, datas }) {
   };
 
   async function handleExclusion() {
-    console.log(datas.ObjectOfCleaning)
     try {
       await Api.post('cleaning/delete', { id: datas.id })
       await Swal.fire({
@@ -40,6 +39,7 @@ export default function Informations({ showModal, onClose, datas }) {
   }
 
   async function reopen() {
+    console.log(datas)
     await Swal.fire({
       icon: 'info',
       title: 'Ao rebrir marcará para o horário atual a nova solicitação',
@@ -72,9 +72,6 @@ export default function Informations({ showModal, onClose, datas }) {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto ">
-
-
-
           <div className="flex min-h-full min-w-lg bg-gray-600 items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
@@ -167,8 +164,10 @@ export default function Informations({ showModal, onClose, datas }) {
                 </div>
                 <button onClick={() => handleExclusion()} className="h-8 px-3 rounded-md shadow text-white bg-red-500 m-4">Excluir</button>
                 <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={reopen}>Limpar Novamente</button>
-                <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={openAvaliation}>Avaliação</button>
-                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} />}
+                {!datas.avaliationId && datas.status == "CONCLUIDO" ? (
+                  <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={openAvaliation}>Avaliação</button>
+                ) : null}
+                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} companyId={datas.id} />}
               </Dialog.Panel>
             </Transition.Child>
           </div>

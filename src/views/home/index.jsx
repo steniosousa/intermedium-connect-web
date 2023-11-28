@@ -85,7 +85,7 @@ export default function Home() {
         denyButtonText: 'Cancelar',
         confirmButtonText: 'Alterar'
       })
-      if (confirm.isDenied) return
+      if (!confirm.isConfirmed) return
       setOpenPerfil(true)
     }
   }

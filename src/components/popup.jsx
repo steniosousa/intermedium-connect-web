@@ -11,8 +11,8 @@ export default function Modal({ closeModal, userId }) {
 
 
 
-   async function editValue() {
-        try{
+    async function editValue() {
+        try {
             const confirm = await Swal.fire({
                 icon: 'warning',
                 title: 'Confirmar alteração?',
@@ -22,16 +22,18 @@ export default function Modal({ closeModal, userId }) {
                 denyButtonText: 'Cancelar',
                 confirmButtonText: 'Confirmar'
             })
-            if(confirm.isDenied) return
+            if (confirm.isDenied) return
             await Api.post('user/update', {
-                params: {userId:userId[0]},
-                body: {active: value == 'active' ? true : false}
+                params: { userId: userId[0] },
+                body: { active: value == 'active' ? true : false }
             })
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
     }
+
+
     return (
         <div className="bg-gray-900 fixed z-30 top-0 right-0 bottom-0 left-0 flex items-center flex-col " onClick={(e) => {
             if (e.target.type === "submit")
