@@ -60,7 +60,7 @@ function Login({ setIsLoggedIn }) {
     <>
       {forgot && <div className="bg-indigo-900 text-center py-4 lg:px-4">
         <div className="p-2 bg-indigo-800 items-center  leading-none lg:rounded-full flex lg:inline-flex" role="alert">
-          <input type="text" onChange={(e) => setEmailRecovery(e.target.value)} placeholder="Inserir Endereço de Email" className="w-full ml-2 mr-2 px-4 py-2 rounded-lg bg-gray-200 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus autocomplete required />
+          <input type="text" onChange={(e) => setEmailRecovery(e.target.value)} placeholder="Inserir Endereço de Email" className="w-full ml-2 mr-2 px-4 py-2 rounded-lg bg-gray-200 border focus:border-blue-500 focus:bg-white focus:outline-none" autoFocus autocomplete required />
           <span onClick={sendEmail} className="flex text-indigo-100 rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">Recuperar</span>
         </div>
       </div>}
@@ -102,7 +102,7 @@ function Login({ setIsLoggedIn }) {
             <form className="mt-6" action="#" method="POST">
               <div>
                 <label className="block text-gray-700">Endereço de email:</label>
-                <input type="text" onChange={(e) => setName(e.target.value)} name="" id="" placeholder="Inserir Endereço de Email" className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus autocomplete required />
+                <input type="text" onChange={(e) => setName(e.target.value)} name="" id="" placeholder="Inserir Endereço de Email" className="w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none" autoFocus autocomplete required />
               </div>
 
               <div className="mt-4">

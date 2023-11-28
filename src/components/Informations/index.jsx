@@ -91,41 +91,15 @@ export default function Informations({ showModal, onClose, datas }) {
                     </svg>
                   </button>
                 </div>
-                <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-24 ">
-                  <div className="-m-1 flex flex-wrap md:-m-2">
-                    <div className="flex w-2/1 flex-row">
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.entrance ? datas.entrance : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.exit ? datas.exit : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs1 ? datas.obs1 : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs2 ? datas.obs2 : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs3 ? datas.obs3 : suposicao} />
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex flex-row w-full gap-4">
+                  {datas.evidences.map((item) => {
+                    return (
+                      <img
+                        alt="gallery"
+                        className="block h-full w-full rounded-lg object-cover object-center"
+                        src={item.evidenceUrl} />
+                    )
+                  })}
                 </div>
 
                 <div className="mx-auto grid max-w-2xl self-center grid-cols-1 items-center  lg:max-w-max m-10">

@@ -14,9 +14,8 @@ export default function Line({ clean }) {
   function countEvidences() {
     let countEvidence = []
     let valuesToPush = [clean.entrance, clean.exit, clean.obs1, clean.obs2, clean.obs3].filter(value => value !== null && value !== undefined);
-
     countEvidence.push(...valuesToPush);
-    setAllEvidence(countEvidence.length);
+    setAllEvidence(clean.evidences.length);
   }
   useEffect(() => {
 
