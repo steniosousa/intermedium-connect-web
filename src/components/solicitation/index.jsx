@@ -14,7 +14,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
   const [placesForSend, setPlacesForSend] = useState('')
   const [horsSelected, setHorsSelected] = useState([])
   const [repeat, setRepeat] = useState(false)
-  const [automated, setAutomated] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const cancelButtonRef = useRef(null);
 
@@ -54,12 +53,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
         confirmButtonText: 'Confirmar'
       })
     }
-
-
-
-
-
-
 
   }
   useEffect(() => {
@@ -112,43 +105,100 @@ export default function Solicitation({ showModal, onClose, datas }) {
       return item.start
     })
 
-    const send = {
-      placeId: placesForSend,
-      objectsId,
-      userId: datas.id,
-      repeatable: repeat,
-      eventDate: horsSelectedForSend || new Date(),
+    const filterScheduleToday = horsSelectedForSend.filter((item) => item.getDate() == new Date().getDate())
+    const filterScheduleFuture = horsSelectedForSend.filter((item) => item.getDate() != new Date().getDate())
+
+    if (filterScheduleToday.length != 0) {
+      const send = {
+        placeId: placesForSend,
+        objectsId,
+        userId: datas.id,
+        repeatable: repeat,
+        eventDate: filterScheduleToday,
+      }
+      try {
+        await Api.post('cleaning/create', send)
+        await Swal.fire({
+          icon: 'success',
+          title: 'Solicitação criada com sucesso!',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+      }
+      catch (error) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Não foi possível criar a solicitação',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+
+      }
+    }
+    if (filterScheduleFuture.length != 0) {
+      const send = {
+        placeId: placesForSend,
+        objectsId,
+        userId: datas.id,
+        repeatable: repeat,
+        eventDate: filterScheduleFuture,
+      }
+      try {
+        await Api.post('schedule/create', send)
+        await Swal.fire({
+          icon: 'success',
+          title: 'Solicitação criada com sucesso!',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+      }
+      catch (error) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Não foi possível criar a solicitação',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+
+      }
     }
 
-    if (automated) {
-      route = 'schedule/create'
-    } else {
-      route = 'cleaning/create'
-    }
-    try {
-      await Api.post(route, send)
-      await Swal.fire({
-        icon: 'success',
-        title: 'Solicitação criada com sucesso!',
-        showDenyButton: true,
-        showCancelButton: false,
-        showConfirmButton: true,
-        denyButtonText: 'Cancelar',
-        confirmButtonText: 'Confirmar'
-      })
-    }
-    catch (error) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Não foi possível criar a solicitação',
-        showDenyButton: true,
-        showCancelButton: false,
-        showConfirmButton: true,
-        denyButtonText: 'Cancelar',
-        confirmButtonText: 'Confirmar'
-      })
+    // try {
+    //   await Api.post('cleaning/create', send)
+    //   await Swal.fire({
+    //     icon: 'success',
+    //     title: 'Solicitação criada com sucesso!',
+    //     showDenyButton: true,
+    //     showCancelButton: false,
+    //     showConfirmButton: true,
+    //     denyButtonText: 'Cancelar',
+    //     confirmButtonText: 'Confirmar'
+    //   })
+    // }
+    // catch (error) {
+    //   await Swal.fire({
+    //     icon: 'error',
+    //     title: 'Não foi possível criar a solicitação',
+    //     showDenyButton: true,
+    //     showCancelButton: false,
+    //     showConfirmButton: true,
+    //     denyButtonText: 'Cancelar',
+    //     confirmButtonText: 'Confirmar'
+    //   })
 
-    }
+    // }
 
   };
 
@@ -243,27 +293,12 @@ export default function Solicitation({ showModal, onClose, datas }) {
                         <Dialog.Title as="h3" className="text-base leading-6 text-gray-900 flex flex-row items-center justify-around m-4 ">
 
                         </Dialog.Title>
-                        {automated ? (
-                          <>
-                            <Calendario catchHors={catchHors} />
-                            <div className="flex flex-col  items-center m-4 dark:border-gray-700">
-                              <input onChange={() => setRepeat(!repeat)} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                              <label for="bordered-checkbox-1" className=" text-xl font-medium text-white ">REPETIR</label>
-                            </div>
-                          </>
-
-
-
-
-                        ) : null}
+                        <Calendario catchHors={catchHors} />
+                        <div className="flex flex-col  items-center m-4 dark:border-gray-700">
+                          <input onChange={() => setRepeat(!repeat)} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                          <label for="bordered-checkbox-1" className=" text-xl font-medium text-white ">REPETIR</label>
+                        </div>
                         < div className='flex flex-row  justify-around w-full '>
-                          <button
-                            type='button'
-                            onClick={() => setAutomated(!automated)}
-                            className="bg-gray-600 hover:bg-black text-white py-2 px-4 rounded-md font-semibold"
-                          >
-                            Agendar
-                          </button>
                           <button
                             onClick={() => handleSubmit(event)}
                             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md font-semibold"

@@ -24,6 +24,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
   const [create, setCreate] = useState(false)
   const [usersEdit, setUsersEdit] = useState(false)
+  const [comapnyForNewManager, setCompanyForNewManager] = useState('')
 
 
 
@@ -181,7 +182,7 @@ export default function Config({ showModal, onClose, companyId }) {
       return
     }
     const send = {
-      companyId: companyId.companyId,
+      companyId: selectArgFromCreate == "manager" ? comapnyForNewManager : companyId.companyId,
       name: nameOfCreation,
       email: emailOfCreation
     }
@@ -277,11 +278,11 @@ export default function Config({ showModal, onClose, companyId }) {
                     </select>
                     {selectArgFromCreate == 'manager' ? (
                       <>
-                        <select selected id="countries" class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <select selected id="countries" onChange={(i) => setCompanyForNewManager(i.target.value)} class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                           <option hidden>Selecione a empresa</option>
                           {companys.map((item) => {
                             return (
-                              <option value="Administrador">{item.name}</option>
+                              <option value={item.id}>{item.name}</option>
 
                             )
                           })}

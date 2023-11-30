@@ -9,16 +9,14 @@ export default function Avaliation({ showModal, onClose, companyId }) {
     const [avaliate, setAvaliate] = useState({})
     const [epis, setEpis] = useState([])
     const [allEpis, setAllEpis] = useState([])
+    const [descritption, setDescription] = useState('')
 
     const avaliations = [
         { value: 'RUIM', label: 'Ruim' },
         { value: 'BOM', label: 'Bom' },
         { value: 'PERFEITO', label: 'Perfeito' }
     ]
-
-
     async function retriveDatas() {
-
         try {
             const { data } = await Api.get('/epis/recover', { params: { companyId: adminObj.companyId } })
             const optionsEquipaments = data.map((item) => {
@@ -67,8 +65,8 @@ export default function Avaliation({ showModal, onClose, companyId }) {
             scheduleId: companyId,
             status: avaliate.value,
             managerId: adminObj.id,
-            episId: epis.map((item) => item.value)
-
+            episId: epis.map((item) => item.value),
+            observation: descritption
         }
         try {
             await Api.post('avaliation/create', send)
@@ -127,7 +125,7 @@ export default function Avaliation({ showModal, onClose, companyId }) {
                                     <div className='p-8'>
 
                                         <div className='mb-4'>
-                                            <p className="text-gray-600 text-xs italic">Selecione somente o que notou faltar</p>
+                                            <p className="text-gray-900  text-xs ">Selecione somente o que notou faltar</p>
                                             <Select
                                                 isMulti
                                                 name="EPIs"
@@ -139,7 +137,7 @@ export default function Avaliation({ showModal, onClose, companyId }) {
                                         </div>
 
                                         <div className='mb-4'>
-                                            <p className="text-gray-600 text-xs italic">Avalie a limpeza</p>
+                                            <p className="text-gray-900  text-xs ">Avalie a limpeza</p>
                                             <Select
                                                 name="Avaliation"
                                                 options={avaliations}
@@ -147,6 +145,10 @@ export default function Avaliation({ showModal, onClose, companyId }) {
                                                 classNamePrefix="Avaliation"
                                                 onChange={(i) => setAvaliate(i)}
                                             />
+                                        </div>
+                                        <div class="mb-6">
+                                            <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900 ">Observação:</label>
+                                            <input onChange={(i) => setDescription(i.target.value)} type="text" id="large-input" class="block w-full  p-4 text-white-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500  " />
                                         </div>
 
 

@@ -97,7 +97,7 @@ export default function Informations({ showModal, onClose, datas }) {
                       <img
                         alt="gallery"
                         className="block h-full w-full rounded-lg object-cover object-center"
-                        src={item.evidenceUrl} />
+                        src={item.evidenceUrl} key={item.evidenceUrl} />
                     )
                   })}
                 </div>
@@ -119,10 +119,8 @@ export default function Informations({ showModal, onClose, datas }) {
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Objetos</dt>
                         {datas.ObjectOfCleaning.map((item) => {
-                          console.log(item)
                           return (
-                            <dd className="mt-2 text-sm text-white">{item.object.name}</dd>
-
+                            <p key={item.object.id} className="mt-2 text-sm text-white">{item.object.name}</p>
                           )
                         })}
                       </div>
