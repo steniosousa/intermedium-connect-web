@@ -1,4 +1,4 @@
-export function User({ name, hash, active, onRedirect, user }) {
+export function User({ name, hash,  onRedirect, user, idCompany }) {
 
   function redirect() {
     onRedirect(user)
@@ -12,7 +12,6 @@ export function User({ name, hash, active, onRedirect, user }) {
           {name}
         </div>
         <div className="flex items-center w-full">
-          <div className="text-xs py-1 px-2 leading-none dark:bg-gray-900 bg-green-100 text-green-600 rounded-md">Ativo</div>
           <div className="ml-auto text-xs text-gray-500">Chave de acesso: {hash}</div>
         </div>
       </button>

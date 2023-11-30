@@ -13,7 +13,6 @@ export function Center({ user }) {
   const [copy, setCopy] = useState('Copiar')
   const [dataLine, setDataLine] = useState([])
 
-  const [showSchudele, setShowSchudele] = useState(false)
 
 
 
@@ -156,9 +155,6 @@ export function Center({ user }) {
 
   }
 
-  async function handleShowSchudele() {
-    setShowSchudele(!showSchudele)
-  }
 
   useEffect(() => {
     getAllDatas()
@@ -168,7 +164,7 @@ export function Center({ user }) {
 
   return (
     <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
-      {showSolicitation && <Solicitation onClose={handleSolicitation} showModal={showSolicitation} datas={user} />}
+      {showSolicitation && <Solicitation onClose={handleSolicitation} showModal={showSolicitation} datas={user}/>}
       <div className="sm:px-7 sm:pt-7 px-4 pt-4 flex flex-col w-full border-b border-gray-200 bg-white dark:bg-gray-900 dark:text-white dark:border-gray-800 sticky top-0">
         <div className="flex w-full items-center">
           <div className="flex items-center text-3xl text-gray-900 dark:text-white">
@@ -194,12 +190,11 @@ export function Center({ user }) {
             <button onClick={handleSolicitation} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-b border-gray-900 rounded-e-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
               Agendamento
             </button>
-            <button onClick={handleShowSchudele} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-b border-gray-900 rounded-e-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+            {/* <button onClick={handleShowSchudele} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-b border-gray-900 rounded-e-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
               Agendamentos
-            </button>
+            </button> */}
           </div>
 
-          {showSchudele && <Schudeles onClose={handleShowSchudele} datas={user} showModal={showSchudele} />}
 
         </div>
       </div>

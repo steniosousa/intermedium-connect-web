@@ -28,7 +28,6 @@ export default function Config({ showModal, onClose, companyId }) {
 
 
 
-  const id = localStorage.getItem('token')
   const handleClose = () => {
     onClose();
 
@@ -41,14 +40,15 @@ export default function Config({ showModal, onClose, companyId }) {
 
 
   async function retriveDatas() {
+    console.log(companyId)
     setLoading(true)
     try {
       const [object, place, users, company, epi] = await Promise.all([
-        Api.get('objects/recover', { params: { companyId: companyId.companyId } }),
-        Api.get('place/recover', { params: { companyId: companyId.companyId } }),
-        Api.get('/user/recover', { params: { companyId: companyId.companyId } }),
+        Api.get('objects/recover', { params: { companyId: companyId } }),
+        Api.get('place/recover', { params: { companyId: companyId } }),
+        Api.get('/user/recover', { params: { companyId: companyId } }),
         Api.get('companies/recover'),
-        Api.get('/epis/recover', { params: { companyId: companyId.companyId } }),
+        Api.get('/epis/recover', { params: { companyId: companyId } }),
       ]);
       setLoading(false)
       setObjects(object.data)
@@ -182,7 +182,7 @@ export default function Config({ showModal, onClose, companyId }) {
       return
     }
     const send = {
-      companyId: selectArgFromCreate == "manager" ? comapnyForNewManager : companyId.companyId,
+      companyId: selectArgFromCreate == "manager" ? comapnyForNewManager : companyId,
       name: nameOfCreation,
       email: emailOfCreation
     }
@@ -224,6 +224,7 @@ export default function Config({ showModal, onClose, companyId }) {
     });
   }
 
+    
 
 
   useEffect(() => {
