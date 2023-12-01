@@ -4,15 +4,32 @@ import Api from '../../api/service';
 import Alert from '../alert';
 import Modal from '../popup';
 import Swal from 'sweetalert2'
+import Select from 'react-select'
 
 export default function Config({ showModal, onClose, companyId }) {
+  const adminObj = JSON.parse(localStorage.getItem('manager'))
 
   const [loading, setLoading] = useState(null)
   const [objects, setObjects] = useState([])
   const [places, setPlaces] = useState([])
   const [users, setUsers] = useState([])
   const [companys, setCompanys] = useState([])
+  const [permissions, setPermissions] = useState([
+    { label: "OBJETOS", value: "OBJECTS" },
+    { label: "AMBIENTES", value: "PLACES" },
+    { label: "EMPRESAS", value: "COMPANIES" },
+    { label: "EPIS", value: "EPIS" },
+  ])
+
+  const [roles, setRoles] = useState([
+    { label: "ADMINISTRADOR", value: "ADMIN" },
+    { label: "GERENTE", value: "MANAGER" },
+  ])
+  const [selectRoles, setSelectRoles] = useState([])
+
+  const [selectPermissions, setSelectPermissions] = useState([])
   const [epis, setEpis] = useState([])
+  const [admins, setAdmins] = useState([])
 
   const [selectArgFromCreate, setSelectArgFromCreate] = useState('')
   const [nameOfCreation, setNameOfCreation] = useState('')
@@ -24,7 +41,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
   const [create, setCreate] = useState(false)
   const [usersEdit, setUsersEdit] = useState(false)
-  const [comapnyForNewManager, setCompanyForNewManager] = useState('')
+  const [comapnyForNewManager, setCompanyForNewManager] = useState([])
 
 
 
@@ -40,22 +57,26 @@ export default function Config({ showModal, onClose, companyId }) {
 
 
   async function retriveDatas() {
-    console.log(companyId)
     setLoading(true)
     try {
-      const [object, place, users, company, epi] = await Promise.all([
+      const [object, place, users, company, epi, managers] = await Promise.all([
         Api.get('objects/recover', { params: { companyId: companyId } }),
         Api.get('place/recover', { params: { companyId: companyId } }),
         Api.get('/user/recover', { params: { companyId: companyId } }),
         Api.get('companies/recover'),
         Api.get('/epis/recover', { params: { companyId: companyId } }),
+        Api.get('/manager/recover', { params: { companyId: companyId } }),
+
       ]);
       setLoading(false)
       setObjects(object.data)
       setPlaces(place.data)
       setUsers(users.data)
-      setCompanys(company.data)
-      console.log(epi)
+      const companies = company.data.map((item) => {
+        return { label: item.name, value: item.id }
+      })
+      setCompanys(companies)
+      setAdmins(managers.data)
       setEpis(epi.data)
     }
     catch (error) {
@@ -156,6 +177,8 @@ export default function Config({ showModal, onClose, companyId }) {
     loading(!showAlert)
   }
   async function handleCreation() {
+
+
     const confirm = await Swal.fire({
       icon: 'info',
       title: `Deseja cadastrar ${selectArgFromCreate}?`,
@@ -181,11 +204,16 @@ export default function Config({ showModal, onClose, companyId }) {
 
       return
     }
+    const companiesSelected = comapnyForNewManager.pop().map((item) => { return item.value })
+    const permissionsSelected = selectPermissions.pop().map((item) => { return item.value })
     const send = {
-      companyId: selectArgFromCreate == "manager" ? comapnyForNewManager : companyId,
+      companyId: selectArgFromCreate == "manager" ? companiesSelected : companyId,
+      permissions: selectArgFromCreate == "manager" ? permissionsSelected : [''],
+      role:selectArgFromCreate == "manager" ? selectRoles.value : [''],
       name: nameOfCreation,
       email: emailOfCreation
     }
+
     try {
       await Api.post(`${selectArgFromCreate}/create`, send)
       setLoading(false)
@@ -213,7 +241,6 @@ export default function Config({ showModal, onClose, companyId }) {
 
     }
 
-
   }
 
 
@@ -224,7 +251,7 @@ export default function Config({ showModal, onClose, companyId }) {
     });
   }
 
-    
+
 
 
   useEffect(() => {
@@ -275,24 +302,42 @@ export default function Config({ showModal, onClose, companyId }) {
                       <option value="place">Ambientes</option>
                       <option value="companies">Empresa</option>
                       <option value='epis'>EPI</option>
-                      <option value="manager">Administrador</option>
-                    </select>
-                    {selectArgFromCreate == 'manager' ? (
-                      <>
-                        <select selected id="countries" onChange={(i) => setCompanyForNewManager(i.target.value)} class="m-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 align-center self-center dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                          <option hidden>Selecione a empresa</option>
-                          {companys.map((item) => {
-                            return (
-                              <option value={item.id}>{item.name}</option>
+                      {adminObj.role == 'ADMIN' ? (
+                        <option value="manager">Administrador</option>
 
-                            )
-                          })}
-                        </select>
+                      ) : null}
+                    </select>
+                    {selectArgFromCreate == 'manager' && adminObj.role == 'ADMIN' ? (
+                      <>
+                        <Select
+                          isMulti
+                          name="Empresas"
+                          options={companys}
+                          onChange={(item) => setCompanyForNewManager((oldState) => [oldState, item])}
+                          className="border rounded-md px-3 py-2 w-2/3 self-center bg-gray-600 text-black"
+                          classNamePrefix="Inserir empresas"
+                          placeholder="Inserir empresas"
+                        />
+                         <Select
+                          name="Posição"
+                          options={roles}
+                          onChange={(item) => setSelectRoles(item)}
+                          className="border rounded-md px-3 py-2 w-2/3 self-center bg-gray-600 text-black"
+                          classNamePrefix="Inserir cargo"
+                          placeholder="Inserir cargo"
+                        />
+                        <Select
+                          isMulti
+                          name="Permissões"
+                          options={permissions}
+                          onChange={(item) => setSelectPermissions((oldState) => [oldState, item])}
+                          className="border rounded-md px-3 py-2 w-2/3 self-center bg-gray-600 text-black"
+                          classNamePrefix="Inserir permissões"
+                          placeholder="Inserir permissões"
+                        />
                         <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="my-4 rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe o nome" />
                         <input onChange={(value) => setEmailOfCreation(value.target.value)} type="email" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe o email" />
-
                       </>
-
                     ) : (
                       <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Informe o nome" />
 
@@ -301,8 +346,6 @@ export default function Config({ showModal, onClose, companyId }) {
                     <div className='m-6'>
                       <button onClick={handleCreation} type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Criar</button>
                     </div>
-
-
                   </div>
                 ) : null}
                 <div>
@@ -337,19 +380,19 @@ export default function Config({ showModal, onClose, companyId }) {
                       <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
                         <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                           <li >
-                            <a href="#" className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">CONFIGURAÇÕES</a>
+                            <a className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">CONFIGURAÇÕES</a>
                           </li>
                           <li onClick={() => handleSelect(users, 'user')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" aria-current="page">Usuários</a>
+                            <a class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700" aria-current="page">Usuários</a>
                           </li>
                           <li onClick={() => handleSelect(objects, 'objects')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Objetos</a>
+                            <a class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Objetos</a>
                           </li>
                           <li onClick={() => handleSelect(places, 'place')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Ambientes</a>
+                            <a class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Ambientes</a>
                           </li>
                           <li onClick={() => handleSelect(companys, 'companies')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Empresas</a>
+                            <a class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Empresas</a>
 
                           </li>
 
@@ -357,8 +400,8 @@ export default function Config({ showModal, onClose, companyId }) {
                             <a class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">EPIs</a>
 
                           </li>
-                          <li >
-                            <a href="#" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Administradores</a>
+                          <li onClick={() => handleSelect(admins, 'manager')}>
+                            <a className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Administradores</a>
                           </li>
                         </ul>
                       </div>
@@ -392,8 +435,6 @@ export default function Config({ showModal, onClose, companyId }) {
                       </div>
 
                     ) : null}
-
-
                     <div>
                       <table className="text-sm text-left text-gray-500 dark:text-gray-400">
                         {fixObj.length != 0 ? (
@@ -422,9 +463,6 @@ export default function Config({ showModal, onClose, companyId }) {
                             </tr>
                           </thead>
                         )}
-
-
-
                         <tbody>
                           {fixObj.map((item) => {
                             return (
@@ -463,14 +501,10 @@ export default function Config({ showModal, onClose, companyId }) {
                               </tr>
                             )
                           })}
-
-
-
                         </tbody>
                       </table>
                     </div>
                   </div>
-
                 </div>
               </Dialog.Panel>
             </Transition.Child>

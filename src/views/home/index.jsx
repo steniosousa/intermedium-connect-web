@@ -42,6 +42,7 @@ export default function Home() {
 
 
   async function getDatas() {
+    if (adminObj.length == 0) return
     try {
       const [users, companies] = await Promise.all([
         Api.get('/user/recover', { params: { companyId: adminObj.companyId[0].companyId } }),
@@ -95,7 +96,7 @@ export default function Home() {
   }, [companieIdSelect])
 
   async function handleConfig() {
-    if(companieIdSelect == ''){
+    if (companieIdSelect == '') {
       await Swal.fire({
         icon: 'error',
         title: 'Selecione a empresa que deseja configurar',
@@ -117,7 +118,7 @@ export default function Home() {
   useEffect(() => {
     if (users == 'Sem usuários') return
     const filteredUsers = users.filter((item) =>
-      item.name.toLowerCase().includes(filterUser.toLowerCase())
+      console.log(item)
     );
     if (filteredUsers.length > 0) {
       setUserWithFilter(filteredUsers)
