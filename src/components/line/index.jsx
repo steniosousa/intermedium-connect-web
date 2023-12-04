@@ -33,27 +33,27 @@ export default function Line({ clean }) {
   return (
     <tr>
       {showModal && <Informations onClose={handleToggleModal} showModal={showModal} datas={clean} />}
-      <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800">
+      <td className="sm:p-3 py-2 px-1 border-b border-gray-800">
         <div className="flex items-center">
 
           {startDate}
         </div>
       </td>
-      <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800">
+      <td className="sm:p-3 py-2 px-1 border-b border-gray-800">
         <div className="flex items-center">
 
           {clean.Place.name}
         </div>
       </td>
       {clean.status === "Pendente" ? (
-        <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800 md:table-cell hidden text-orange-500">{clean.status}</td>
+        <td className="sm:p-3 py-2 px-1 border-b border-gray-800 md:table-cell hidden text-orange-500">{clean.status}</td>
 
       ) : (
-        <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800 md:table-cell hidden text-green-500" >{clean.status}</td>
+        <td className="sm:p-3 py-2 px-1 border-b border-gray-800 md:table-cell hidden text-green-500" >{clean.status}</td>
 
       )}
-      <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800 text-green-500"> {allEvidence}</td>
-      <td className="sm:p-3 py-2 px-1 border-b border-gray-200 dark:border-gray-800">
+      <td className="sm:p-3 py-2 px-1 border-b border-gray-800 text-green-500"> {allEvidence}</td>
+      <td className="sm:p-3 py-2 px-1 border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div className="sm:flex hidden flex-col">
             {finishDate}
@@ -61,7 +61,7 @@ export default function Line({ clean }) {
 
           <Menu as="div" className="relative inline-block text-left">
             <div>
-              <Menu.Button className="inline-flex items-center justify-center text-gray-400 ml-auto">
+              <Menu.Button className="inline-flex items-center justify-center text-primary ml-auto">
                 <svg viewBox="0 0 24 24" className="w-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="1"></circle>
                   <circle cx="19" cy="12" r="1"></circle>
@@ -87,7 +87,7 @@ export default function Line({ clean }) {
                         
                         onClick={() => handleToggleModal()}
                         className={classNames(
-                          active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                          active ? 'bg-gray-100 text-primary' : 'text-gray-700',
                           'block px-4 py-2 text-sm cursor-pointer hover:text-green-700'
                         )}
                       >

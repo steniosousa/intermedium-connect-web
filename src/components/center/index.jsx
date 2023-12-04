@@ -156,20 +156,20 @@ export function Center({ user }) {
 
 
   return (
-    <div className="flex-grow bg-white dark:bg-gray-900 overflow-y-auto">
+    <div className="flex-grow bg-primary text-primary overflow-y-auto">
       {showSolicitation && <Solicitation onClose={handleSolicitation} showModal={showSolicitation} datas={user} />}
-      <div className="sm:px-7 sm:pt-7 px-4 pt-4 flex flex-col w-full border-b border-gray-200 bg-white dark:bg-gray-900 dark:text-white dark:border-gray-800 sticky top-0">
+      <div className="sm:px-7 sm:pt-7 px-4 pt-4 flex flex-col w-full border-b border-gray-800 bg-primary text-primary sticky top-0">
         <div className="flex w-full items-center">
-          <div className="flex items-center text-3xl text-gray-900 dark:text-white">
-            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" className="w-12 mr-4 rounded-full" alt="profile" />
+          <div className="flex items-center text-3xl text-primary">
+            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" className="w-12 mr-4 rounded-full " alt="profile" />
             {user && user.name}
           </div>
           <div className="ml-auto sm:flex hidden items-center justify-end">
             <div className="text-right">
-              <div className="text-xs text-gray-400 dark:text-gray-400">Chave de acesso</div>
-              <div className="text-gray-900 text-lg dark:text-white">{user && user.loginHash}</div>
+              <div className="text-xs text-primary">Chave de acesso</div>
+              <div className="text-primary text-lg">{user && user.loginHash}</div>
             </div>
-            <button onClick={copyHash} className="w-12 h-12 ml-4 text-gray-400 shadow dark:text-gray-400 rounded-full flex items-center justify-center border border-gray-200 dark:border-gray-700">
+            <button onClick={copyHash} className="w-12 h-12 ml-4 text-primary shadow rounded-full flex items-center justify-center border border-gray-200">
               <span>{copy}</span>
             </button>
           </div>
@@ -177,13 +177,13 @@ export function Center({ user }) {
         <div className="flex items-center space-x-3 my-4">
 
           <div className="inline-flex rounded-md shadow-sm" role="group">
-            <button type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-blue-900  rounded-s-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+            <button type="button" className="px-4 py-2 text-sm font-medium text-primary bg-quaternary  border-b border-black rounded-s-lg focus:z-10 focus:ring-2 focus:text-white  hover:text-white hover:bg-quaternary focus:border-white hover:border-white">
               Histórico
             </button>
-            <button onClick={handleSolicitation} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent  border-b border-gray-900 hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+            <button onClick={handleSolicitation} type="button" className="px-4 py-2 text-sm font-medium text-primary border-b border-black focus:z-10 focus:ring-2 focus:bg-quaternary focus:text-white  hover:text-white hover:bg-quaternary focus:border-white hover:border-white">
               Agendar
             </button>
-            <button onClick={handleShowSchudele} type="button" className="px-4 py-2 text-sm font-medium text-gray-900 bg-transparent border-b border-gray-900 rounded-e-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+            <button onClick={handleShowSchudele} type="button" className="px-4 py-2 text-sm font-medium text-primary bg-transparent border-b  rounded-e-lg border-black focus:z-10 focus:ring-2 focus:bg-quaternary focus:text-white  hover:text-white hover:bg-quaternary focus:border-white hover:border-white">
               Agendamentos
             </button>
           </div>
@@ -195,15 +195,14 @@ export function Center({ user }) {
       <div className="sm:p-7 p-4">
         <div className="flex w-full items-center mb-7 justify-between">
           <div>
-
-            <select id="countries" onChange={(item) => filterCleaning(item.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select id="countries" onChange={(item) => filterCleaning(item.target.value)} className=" border border-transparent  text-white bg-quaternary outline-transparent text-sm rounded-lg block w-full p-2.5">
               <option value={'ALL'} selected>Tudo</option>
               <option value="PENDENTE">Pendente</option>
               <option value="ASSUMIDO">Assumido</option>
               <option value="CONCLUIDO">Concluído</option>
             </select>
           </div>
-          <button onClick={generatePdf} className="text-white inline-flex  bg-green-900 px-16 items-center h-8 w-8 text-base justify-center text-black-600 rounded-md shadow border border-gray-200 dark:border-gray-800 leading-none py-0">Relatório</button>
+          <button onClick={generatePdf} className="text-white inline-flex  bg-green-600 px-16 items-center h-8 w-8 text-base justify-center text-black-600 rounded-md shadow border border-gray-800 leading-none py-0">Relatório</button>
         </div>
 
         {dataLine.length == 0 ? (
@@ -215,16 +214,16 @@ export function Center({ user }) {
         <table className="w-full text-left">
 
           <thead>
-            <tr className="text-gray-400">
-              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Início</th>
-              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Ambiente</th>
-              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 hidden md:table-cell">Status</th>
-              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Evidencias</th>
-              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 sm:text-gray-400 text-white">Atualização</th>
+            <tr className="text-primary">
+              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-800">Início</th>
+              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-800">Ambiente</th>
+              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-800 hidden md:table-cell">Status</th>
+              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-800">Evidencias</th>
+              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-800 sm:text-primary">Atualização</th>
             </tr>
           </thead>
 
-          <tbody className="text-gray-600 dark:text-gray-100">
+          <tbody className="text-primary">
             {dataLine && dataLine.map((clear) => {
               return (
                 <Line clean={clear} key={clear.id} />

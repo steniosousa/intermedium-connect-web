@@ -1,3 +1,29 @@
+.dark {
+  --color-bg-primary: rgb(17 24 39);
+  --color-text-primary: #fff;
+  --color-border-primary:rgb(59 130 246);
+  --color-bg-secondary: #ffffff;
+  --color-text-secondary: rgb(17 24 39);
+  --color-bg-tertiary: #ffffff;
+  --color-text-tertiary: rgb(17 24 39);
+  --color-bg-quaternary: rgb(59 130 246);
+  --color-text-quaternary: #ffffff;
+  --color-text-quinary: rgb(59 130 246);
+}
+
+.light {
+  --color-bg-primary: #ffffff;
+  --color-text-primary: rgb(17 24 39);
+  --color-border-primary: #9169FF;
+  --color-bg-secondary: rgb(17 24 39);
+  --color-text-secondary: #ffffff; 
+  --color-bg-tertiary: #9169FF;
+  --color-text-tertiary: #9169FF;
+  --color-bg-quaternary: #9169FF;
+  --color-text-quaternary: #9169FF;
+  --color-text-quinary: #9169FF;
+}
+
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';

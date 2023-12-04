@@ -2,12 +2,18 @@ import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Api from '../../api/service';
 import Swal from 'sweetalert2'
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 export default function Perfil({ showModal, onClose, admin }) {
     const [name, setName] = useState(null)
     const [newPass, setNewPass] = useState(null)
     const [newEmail, setNewEmail] = useState(null)
     const [codigo, setCodigo] = useState(null)
+    const [passwordEye, setPasswordEye] = useState(false)
+
+    const hadlePasswordEye = () => {
+        setPasswordEye(!passwordEye)
+    }
 
     async function handleReceivePassword() {
         const confirm = await Swal.fire({
@@ -159,7 +165,7 @@ export default function Perfil({ showModal, onClose, admin }) {
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="relative transform overflow-hidden m-4 rounded-lg bg-white text-left shadow-xl m-4 transition-all sm:my-8 sm:w-max min-w-max ">
+                            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl m-4 transition-all sm:my-8 sm:w-max min-w-max ">
                                 <div className="bg-indigo-900 text-center py-4 lg:px-4">
                                     <div className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex" role="alert">
                                         <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">Editar Perfil</span>
@@ -183,11 +189,17 @@ export default function Perfil({ showModal, onClose, admin }) {
                                             </label>
                                             <input onChange={(i) => setNewEmail(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="email" placeholder="any@gmail.com" />
                                         </div>
-                                        <div class="w-full px-3">
+                                        <div class="w-full px-3 relative">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
                                                 Password
                                             </label>
-                                            <input onChange={(i) => setNewPass(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="******************" />
+                                            <input type={(passwordEye === false && newPass != '' && newPass)? 'password': 'text'} onChange={(i) => setNewPass(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" placeholder="Coloque sua Senha" />
+                                            <div className='text-2xl absolute top-9 right-7'>
+                                                {
+                                                    (passwordEye === false) ? <AiFillEyeInvisible onClick={hadlePasswordEye}/>:
+                                                    <AiFillEye onClick={hadlePasswordEye}/>
+                                                }
+                                            </div>
                                         </div>
                                         <div class="w-full px-3 mt-4">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
