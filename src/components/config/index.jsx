@@ -4,15 +4,31 @@ import Api from '../../api/service';
 import Alert from '../alert';
 import Modal from '../popup';
 import Swal from 'sweetalert2'
-
+import Select from 'react-select'
 export default function Config({ showModal, onClose, companyId }) {
+  const adminObj = JSON.parse(localStorage.getItem('manager'))
 
   const [loading, setLoading] = useState(null)
   const [objects, setObjects] = useState([])
   const [places, setPlaces] = useState([])
   const [users, setUsers] = useState([])
   const [companys, setCompanys] = useState([])
+  const [permissions, setPermissions] = useState([
+    { label: "OBJETOS", value: "OBJECTS" },
+    { label: "AMBIENTES", value: "PLACES" },
+    { label: "EMPRESAS", value: "COMPANIES" },
+    { label: "EPIS", value: "EPIS" },
+  ])
+
+  const [roles, setRoles] = useState([
+    { label: "ADMINISTRADOR", value: "ADMIN" },
+    { label: "GERENTE", value: "MANAGER" },
+  ])
+  const [selectRoles, setSelectRoles] = useState([])
+
+  const [selectPermissions, setSelectPermissions] = useState([])
   const [epis, setEpis] = useState([])
+  const [admins, setAdmins] = useState([])
 
   const [selectArgFromCreate, setSelectArgFromCreate] = useState('')
   const [nameOfCreation, setNameOfCreation] = useState('')
@@ -24,10 +40,10 @@ export default function Config({ showModal, onClose, companyId }) {
 
   const [create, setCreate] = useState(false)
   const [usersEdit, setUsersEdit] = useState(false)
+  const [comapnyForNewManager, setCompanyForNewManager] = useState([])
 
 
 
-  const id = localStorage.getItem('token')
   const handleClose = () => {
     onClose();
 
@@ -42,24 +58,28 @@ export default function Config({ showModal, onClose, companyId }) {
   async function retriveDatas() {
     setLoading(true)
     try {
-      const [object, place, users, company, epi] = await Promise.all([
-        Api.get('objects/recover', { params: { companyId: companyId.companyId } }),
-        Api.get('place/recover', { params: { companyId: companyId.companyId } }),
-        Api.get('/user/recover', { params: { companyId: companyId.companyId } }),
+      const [object, place, users, company, epi, managers] = await Promise.all([
+        Api.get('objects/recover', { params: { companyId: companyId } }),
+        Api.get('place/recover', { params: { companyId: companyId } }),
+        Api.get('/user/recover', { params: { companyId: companyId } }),
         Api.get('companies/recover'),
-        Api.get('/epis/recover', { params: { companyId: companyId.companyId } }),
+        Api.get('/epis/recover', { params: { companyId: companyId } }),
+        Api.get('/manager/recover', { params: { companyId: companyId } }),
+
       ]);
       setLoading(false)
       setObjects(object.data)
       setPlaces(place.data)
       setUsers(users.data)
-      setCompanys(company.data)
-      console.log(epi)
+      const companies = company.data.map((item) => {
+        return { label: item.name, value: item.id }
+      })
+      setCompanys(companies)
+      setAdmins(managers.data)
       setEpis(epi.data)
     }
     catch (error) {
       setLoading(false)
-
       await Swal.fire({
         icon: 'error',
         title: 'Erro ao recuperar dados',
@@ -180,8 +200,18 @@ export default function Config({ showModal, onClose, companyId }) {
 
       return
     }
-    const send = {
-      companyId: companyId.companyId,
+    let companiesSelected
+    let permissionsSelected
+    if (selectArgFromCreate == "manager") {
+      companiesSelected = comapnyForNewManager.pop().map((item) => { return item.value })
+      permissionsSelected = selectPermissions.pop().map((item) => { return item.value })
+
+    }
+
+    let send = {
+      companyId: selectArgFromCreate == "manager" ? companiesSelected : companyId,
+      permissions: selectArgFromCreate == "manager" ? permissionsSelected : [''],
+      role: selectArgFromCreate == "manager" ? selectRoles.value : [''],
       name: nameOfCreation,
       email: emailOfCreation
     }
@@ -212,7 +242,6 @@ export default function Config({ showModal, onClose, companyId }) {
 
     }
 
-
   }
 
 
@@ -222,6 +251,7 @@ export default function Config({ showModal, onClose, companyId }) {
       return isItemInState ? oldState.filter((i) => i !== item) : [...oldState, item];
     });
   }
+
 
 
 
@@ -260,12 +290,8 @@ export default function Config({ showModal, onClose, companyId }) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-primary text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
-
-
                 {create ? (
-
                   <div className='my-20 align-center flex flex-col justify-center'>
-
                     <label for="countries" class="block mb-2 text-sm font-medium text-primary">Criação de:</label>
                     <select selected onChange={(value) => setSelectArgFromCreate(value.target.value)} id="countries" class="m-3 bg-tertiary border border-gray-300 outline-transparent text-secondary text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 align-center self-center">
                       <option hidden  >Clique e Selecione Uma Opção</option>
@@ -273,19 +299,38 @@ export default function Config({ showModal, onClose, companyId }) {
                       <option value="place">Ambientes</option>
                       <option value="companies">Empresa</option>
                       <option value='epis'>EPI</option>
-                      <option value="manager">Administrador</option>
+                      {selectArgFromCreate == 'manager' && adminObj.role == 'ADMIN' ? (
+                        <option ption value="manager">Administrador</option>
+                      ) : null}
                     </select>
-                    {selectArgFromCreate == 'manager' ? (
+                    {selectArgFromCreate == 'manager' && adminObj.role == 'ADMIN' ? (
                       <>
-                        <select selected id="countries" class="m-3 bg-tertiary border border-gray-300 outline-transparent text-secondary text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 align-center self-center">
-                          <option hidden>Selecione a empresa</option>
-                          {companys.map((item) => {
-                            return (
-                              <option value="Administrador">{item.name}</option>
-
-                            )
-                          })}
-                        </select>
+                        <Select
+                          isMulti
+                          name="Empresas"
+                          options={companys}
+                          onChange={(item) => setCompanyForNewManager((oldState) => [oldState, item])}
+                          className="border rounded-md px-3 py-2 w-2/3 self-center bg-gray-600 text-black"
+                          classNamePrefix="Inserir empresas"
+                          placeholder="Inserir empresas"
+                        />
+                        <Select
+                          name="Posição"
+                          options={roles}
+                          onChange={(item) => setSelectRoles(item)}
+                          className="border rounded-md px-3 py-2 w-2/3 self-center bg-gray-600 text-black"
+                          classNamePrefix="Inserir cargo"
+                          placeholder="Inserir cargo"
+                        />
+                        <Select
+                          isMulti
+                          name="Permissões"
+                          options={permissions}
+                          onChange={(item) => setSelectPermissions((oldState) => [oldState, item])}
+                          className="border rounded-md px-3 py-2 w-2/3 self-center bg-gray-600 text-black"
+                          classNamePrefix="Inserir permissões"
+                          placeholder="Inserir permissões"
+                        />
                         <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="my-4 rounded-none rounded-e-lg bg-tertiary border border-gray-300 outline-transparent  text-secondary focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5" placeholder="Informe o nome" />
                         <input onChange={(value) => setEmailOfCreation(value.target.value)} type="email" id="website-admin" class="rounded-none rounded-e-lg bg-tertiary border border-gray-300 outline-transparent text-secondary focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5" placeholder="Informe o email" />
 
@@ -295,12 +340,9 @@ export default function Config({ showModal, onClose, companyId }) {
                       <input onChange={(value) => setNameOfCreation(value.target.value)} type="text" id="website-admin" class="rounded-none rounded-e-lg bg-tertiary border border-gray-300 outline-transparent text-secondary focus:ring-blue-500 focus:border-blue-500 block  min-w-0 w-2/3 align-center self-center text-sm p-2.5" placeholder="Informe o nome" />
 
                     )}
-
                     <div className='m-6'>
                       <button onClick={handleCreation} type="button" class="text-quaternary hover:text-white border border-primary hover:bg-quaternary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Criar</button>
                     </div>
-
-
                   </div>
                 ) : null}
                 <div>
@@ -326,7 +368,6 @@ export default function Config({ showModal, onClose, companyId }) {
                           </button>
                         </div>
                         <button data-collapse-toggle="navbar-sticky" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200  " aria-controls="navbar-sticky" aria-expanded="false">
-                          <span className="sr-only">Open main menu</span>
                           <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
                           </svg>
@@ -348,12 +389,9 @@ export default function Config({ showModal, onClose, companyId }) {
                           </li>
                           <li onClick={() => handleSelect(companys, 'companies')}>
                             <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Empresas</a>
-
                           </li>
-
                           <li onClick={() => handleSelect(epis, 'epis')}>
                             <a class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">EPIs</a>
-
                           </li>
                           <li >
                             <a href="#" className="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Administradores</a>
@@ -376,9 +414,7 @@ export default function Config({ showModal, onClose, companyId }) {
                               <button type="button" onClick={showComponent} class="text-quaternary hover:text-white border border-primary hover:bg-quaternary focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Editar</button>
                             ) : null}
                             <button type="button" onClick={deletion} class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Excluir</button>
-
                           </>
-
                         ) : (
                           <>
                             <button type="button" disabled className="border   focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2  ">Editar</button>
@@ -386,9 +422,7 @@ export default function Config({ showModal, onClose, companyId }) {
                           </>
 
                         )}
-
                       </div>
-
                     ) : null}
 
 
@@ -420,7 +454,6 @@ export default function Config({ showModal, onClose, companyId }) {
                             </tr>
                           </thead>
                         )}
-
 
 
                         <tbody>

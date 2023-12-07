@@ -6,6 +6,7 @@ import Alert from '../alert';
 import Select from 'react-select'
 import Calendario from '../calendar/calendario';
 import Swal from 'sweetalert2'
+import Schudeles from '../schudeles';
 
 export default function Solicitation({ showModal, onClose, datas }) {
   const [objectsOptions, setObjectsOptions] = useState([])
@@ -13,19 +14,13 @@ export default function Solicitation({ showModal, onClose, datas }) {
   const [selectForSend, setSelectForSend] = useState([])
   const [placesForSend, setPlacesForSend] = useState('')
   const [horsSelected, setHorsSelected] = useState([])
-
-
-
   const [repeat, setRepeat] = useState(false)
-
-
-  const [automated, setAutomated] = useState(false)
-
   const [showAlert, setShowAlert] = useState(false)
-
-
-
   const cancelButtonRef = useRef(null);
+
+  const [showSchudele, setShowSchudele] = useState(false)
+
+
 
   const handleClose = () => {
     onClose();
@@ -36,12 +31,12 @@ export default function Solicitation({ showModal, onClose, datas }) {
       const [object, place] = await Promise.all([
         Api.get('objects/recover', {
           params: {
-            companyId: datas.companyId
+            companyId: datas.userForCompany[0].companyId
           }
         }),
         Api.get('place/recover', {
           params: {
-            companyId: datas.companyId
+            companyId: datas.userForCompany[0].companyId
           }
         })
       ]);
@@ -63,12 +58,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
         confirmButtonText: 'Confirmar'
       })
     }
-
-
-
-
-
-
 
   }
   useEffect(() => {
@@ -96,7 +85,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
       confirmButtonText: 'Confirmar'
     })
     if (!confirm.isConfirmed) return
-    let route;
 
     if (placesForSend === '' && selectForSend.length == 0) {
       await Swal.fire({
@@ -111,8 +99,6 @@ export default function Solicitation({ showModal, onClose, datas }) {
       return
     }
 
-
-
     const objectsId = selectForSend.map((item, indice) => {
       return item[indice].value
     })
@@ -121,42 +107,84 @@ export default function Solicitation({ showModal, onClose, datas }) {
       return item.start
     })
 
-    const send = {
-      placeId: placesForSend,
-      objectsId,
-      userId: datas.id,
-      repeatable: repeat,
-      eventDate: horsSelectedForSend || new Date(),
-    }
+    const filterScheduleToday = horsSelectedForSend.filter((item) => item.getDate() == new Date().getDate())
+    const filterScheduleFuture = horsSelectedForSend.filter((item) => item.getDate() != new Date().getDate())
 
-    if (automated) {
-      route = 'schedule/create'
-    } else {
-      route = 'cleaning/create'
-    }
-    try {
-      await Api.post(route, send)
-      await Swal.fire({
-        icon: 'success',
-        title: 'Solicitação criada com sucesso!',
-        showDenyButton: true,
-        showCancelButton: false,
-        showConfirmButton: true,
-        denyButtonText: 'Cancelar',
-        confirmButtonText: 'Confirmar'
-      })
-    }
-    catch (error) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Não foi possível criar a solicitação',
-        showDenyButton: true,
-        showCancelButton: false,
-        showConfirmButton: true,
-        denyButtonText: 'Cancelar',
-        confirmButtonText: 'Confirmar'
-      })
+    if (filterScheduleToday.length != 0) {
+      const send = {
+        placeId: placesForSend,
+        objectsId,
+        userId: datas.id,
+        repeatable: repeat,
+        eventDate: filterScheduleToday,
+      }
+      try {
+        await Api.post('cleaning/create', send)
+        await Swal.fire({
+          icon: 'success',
+          title: 'Solicitação criada com sucesso!',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+        setPlacesForSend('')
+        setRepeat(false)
+        setHorsSelected([])
+        setSelectForSend([])
+        setObjectsOptions([])
+      }
+      catch (error) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Não foi possível criar a solicitação',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
 
+      }
+    }
+    if (filterScheduleFuture.length != 0) {
+      const send = {
+        placeId: placesForSend,
+        objectsId,
+        userId: datas.id,
+        repeatable: repeat,
+        eventDate: filterScheduleFuture,
+      }
+      try {
+        await Api.post('schedule/create', send)
+        await Swal.fire({
+          icon: 'success',
+          title: 'Solicitação criada com sucesso!',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+        setPlacesForSend('')
+        setRepeat(false)
+        setHorsSelected([])
+        setSelectForSend([])
+        setObjectsOptions([])
+      }
+      catch (error) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Não foi possível criar a solicitação',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+
+      }
     }
 
   };
@@ -167,6 +195,10 @@ export default function Solicitation({ showModal, onClose, datas }) {
   function openAlert() {
     handleClose()
     setShowAlert(!showAlert)
+  }
+
+  function showSchudeles() {
+    setShowSchudele(!showSchudele)
   }
 
 
@@ -206,17 +238,27 @@ export default function Solicitation({ showModal, onClose, datas }) {
                 <div className="bg-indigo-900 text-center py-4 lg:px-4">
                   <div className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex" role="alert">
                     <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">New</span>
-                    <span className="font-semibold mr-2 text-left flex-auto">Faça ou marque suas solicitações futuras</span>
+                    <span className="font-semibold mr-2 text-left flex-auto">Marcar solicitação</span>
                     <svg className="fill-current opacity-75 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z" /></svg>
                   </div>
                 </div>
                 <div className="bg-gray-900 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="flex flex-col items-center justify-center">
-
+                    <div>
+                      <button type="button" class="text-white bg-gray-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-grey-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Solicitação
+                      </button>
+                      <button onClick={showSchudeles} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        Lista de agendamentos
+                        <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                        </svg>
+                      </button>
+                    </div>
+                    {showSchudele && <Schudeles onClose={showSchudeles} datas={datas} showModal={showSchudele} />}
                     <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title as="h3" className="text-base leading-6 text-gray-900">
                       </Dialog.Title>
-
                       <form>
                         <div className="mb-4">
                           <label htmlFor="object" className="block text-gray-700 font-semibold mb-1 text-white">
@@ -245,42 +287,26 @@ export default function Solicitation({ showModal, onClose, datas }) {
                             className="border rounded-md px-3 py-2 w-full bg-gray-600 text-black"
                             classNamePrefix="select"
                           />
-
-
                         </div>
-
+                        <div class="flex">
+                          <div class="flex items-center h-5">
+                            <input onChange={() => setRepeat(!repeat)} id="helper-radio" aria-describedby="helper-radio-text" type="checkbox" value="" class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                          </div>
+                          <div class="ms-2 text-sm">
+                            <label for="helper-radio" class="font-medium text-gray-900 dark:text-gray-300">Ativar repetição de solicitação</label>
+                            <p id="helper-radio-text" class="text-xs font-normal text-gray-500 dark:text-gray-300">Com campo selecionado a solicitação será marcada toda semana no horário agendado</p>
+                          </div>
+                        </div>
                         <Dialog.Title as="h3" className="text-base leading-6 text-gray-900 flex flex-row items-center justify-around m-4 ">
-
                         </Dialog.Title>
-                        {automated ? (
-                          <>
-                            <Calendario catchHors={catchHors} />
-                            <div className="flex flex-col  items-center m-4 dark:border-gray-700">
-                              <input onChange={() => setRepeat(!repeat)} id="bordered-checkbox-1" type="checkbox" value="" name="bordered-checkbox" className=" text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                              <label for="bordered-checkbox-1" className=" text-xl font-medium text-white ">REPETIR</label>
-                            </div>
-                          </>
-
-
-
-
-                        ) : null}
+                        <Calendario catchHors={catchHors} />
                         < div className='flex flex-row  justify-around w-full '>
-                          <button
-                            type='button'
-                            onClick={() => setAutomated(!automated)}
-                            className="bg-gray-600 hover:bg-black text-white py-2 px-4 rounded-md font-semibold"
-                          >
-                            Agendar
-                          </button>
                           <button
                             onClick={() => handleSubmit(event)}
                             className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md font-semibold"
                           >
                             Enviar
                           </button>
-
-
                         </div>
                       </form>
                     </div>

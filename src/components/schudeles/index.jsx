@@ -6,8 +6,6 @@ import Alert from '../alert';
 
 export default function Schudeles({ showModal, onClose, datas }) {
 
-  const [loading, setLoading] = useState(null)
-  const [sucess, setSucess] = useState(null)
   const [schudele, setSchudele] = useState([])
   const handleClose = () => {
     onClose();
@@ -29,7 +27,15 @@ export default function Schudeles({ showModal, onClose, datas }) {
       setSchudele(data)
     }
     catch (error) {
-      setSucess('error')
+      await Swal.fire({
+        icon: 'error',
+        title: 'Erro ao recuperar histórico',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
     }
 
   }
@@ -38,7 +44,6 @@ export default function Schudeles({ showModal, onClose, datas }) {
 
 
   async function handleDeleteSchudele(schudeleId) {
-
     try {
       await Api.delete('/schedule/delete', {
         params: {
@@ -54,20 +59,16 @@ export default function Schudeles({ showModal, onClose, datas }) {
   async function handleDisableOrEnableSchudele(schudeleId) {
     try {
       await Api.post('/schedule/edit', {
-          scheduleId: schudeleId.id
+        scheduleId: schudeleId.id
       })
       retriveDatas()
     } catch (error) {
     }
   }
-  function openAlert() {
-    loading(!showAlert)
-  }
 
   useEffect(() => {
     retriveDatas()
   }, [])
-
   return (
     <Transition.Root show={showModal} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose}>
@@ -86,7 +87,6 @@ export default function Schudeles({ showModal, onClose, datas }) {
         <div className="fixed inset-0 z-10 overflow-y-auto ">
 
 
-          {loading && <Alert onCloseAlert={openAlert} showAlert={loading} />}
 
           <div className="flex min-h-full min-w-lg items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
             <Transition.Child
@@ -99,23 +99,7 @@ export default function Schudeles({ showModal, onClose, datas }) {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="bg-gray-600 text-white relative transform overflow-hidden rounded-lg  text-center shadow-xl m-4 transition-all sm:my-8 sm:w-full min-w-lg">
-                {sucess == 'sucess' ? (
-                  <div className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
-                    <p className="font-bold">Sucesso!</p>
-                    <p className="text-sm">Sua solicitação foi excluída com sucesso.</p>
-                  </div>
-
-                ) : sucess == 'error' ? (
-                  <div role="alert">
-                    <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
-                      Erro!
-                    </div>
-                    <div className="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
-                      <p>Algo de errado aconteceu na sua solicitação</p>
-                    </div>
-                  </div>
-
-                ) : null}
+         
                 <div className=''>
                   <button type="button" onClick={handleClose} className="absolute right-4 top-4 text-red-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8">
                     <span className="sr-only">Close</span>

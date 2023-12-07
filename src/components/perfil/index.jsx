@@ -179,7 +179,7 @@ export default function Perfil({ showModal, onClose, admin }) {
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                                 Nome
                                             </label>
-                                            <input onChange={(i) => setName(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={admin.name} />
+                                            <input onChange={(i) => setName(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" />
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap -mx-3 mb-6 ">
@@ -187,17 +187,17 @@ export default function Perfil({ showModal, onClose, admin }) {
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
                                                 Email:
                                             </label>
-                                            <input onChange={(i) => setNewEmail(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="email" placeholder="any@gmail.com" />
+                                            <input onChange={(i) => setNewEmail(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="email" />
                                         </div>
                                         <div class="w-full px-3 relative">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
                                                 Password
                                             </label>
-                                            <input type={(passwordEye === false && newPass != '' && newPass)? 'password': 'text'} onChange={(i) => setNewPass(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" placeholder="Coloque sua Senha" />
+                                            <input type={(passwordEye === false && newPass != '' && newPass) ? 'password' : 'text'} onChange={(i) => setNewPass(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" />
                                             <div className='text-2xl absolute top-9 right-7'>
                                                 {
-                                                    (passwordEye === false) ? <AiFillEyeInvisible onClick={hadlePasswordEye}/>:
-                                                    <AiFillEye onClick={hadlePasswordEye}/>
+                                                    (passwordEye === false) ? <AiFillEyeInvisible onClick={hadlePasswordEye} /> :
+                                                        <AiFillEye onClick={hadlePasswordEye} />
                                                 }
                                             </div>
                                         </div>
@@ -205,7 +205,7 @@ export default function Perfil({ showModal, onClose, admin }) {
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
                                                 Código de recuperação
                                             </label>
-                                            <input onChange={(i) => setCodigo(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="text" placeholder="bba67e47-7114-4df6-a3ab-6d998ff9fc36" />
+                                            <input onChange={(i) => setCodigo(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="text" />
                                             <p class="text-gray-600 text-xs italic">Só será realizado as alterações caso campo preenchido</p>
                                         </div>
                                     </div>
