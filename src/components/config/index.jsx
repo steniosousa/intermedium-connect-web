@@ -299,7 +299,7 @@ export default function Config({ showModal, onClose, companyId }) {
                       <option value="place">Ambientes</option>
                       <option value="companies">Empresa</option>
                       <option value='epis'>EPI</option>
-                      {selectArgFromCreate == 'manager' && adminObj.role == 'ADMIN' ? (
+                      {adminObj.role == 'ADMIN' ? (
                         <option ption value="manager">Administrador</option>
                       ) : null}
                     </select>
