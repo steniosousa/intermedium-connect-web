@@ -8,7 +8,7 @@ import 'jspdf-autotable';
 import Swal from 'sweetalert2'
 
 
-export function Center({ user,idCompany }) {
+export function Center({ user, idCompany }) {
   const [showSolicitation, setShowSolicitation] = useState(false);
   const [copy, setCopy] = useState('Copiar')
   const [dataLine, setDataLine] = useState([])
@@ -34,6 +34,18 @@ export function Center({ user,idCompany }) {
           userId: user.id
         }
       })
+      if (data.length == 0) {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Usuário sem avaliações',
+          showDenyButton: true,
+          showCancelButton: false,
+          showConfirmButton: true,
+          denyButtonText: 'Cancelar',
+          confirmButtonText: 'Confirmar'
+        })
+        return
+      }
       dataForPdf = data
     } catch (error) {
       await Swal.fire({
@@ -56,14 +68,14 @@ export function Center({ user,idCompany }) {
 
     pdf.setFontSize(10);
     pdf.text('Endereço: R. São José, 40 - Conjunto - Jardim Bandeirantes, Maracanaú - CE, 61934-070', 60, 25)
-   
+
     pdf.setFontSize(10);
     pdf.text('Telefone: (85) 3031-4510', 60, 30)
 
     pdf.setFontSize(10);
     pdf.text(`Relatório de: ${user.name}`, 15, 55);
 
-    const headers = [['Data', 'Ambiente', 'Objetos', 'Avaliação', 'EPIs', 'Comentário']];
+    const headers = [['Data', 'Ambiente', 'Objetos', 'Avaliação', 'EPIs']];
 
     const datas = dataForPdf.map((item) => {
       const objects = item.ObjectOfCleaning.map((object) => object.object.name).join(', ');
@@ -165,7 +177,7 @@ export function Center({ user,idCompany }) {
 
   return (
     <div className="flex-grow bg-primary text-primary overflow-y-auto">
-     {showSolicitation && <Solicitation onClose={handleSolicitation} showModal={showSolicitation} datas={user}/>}
+      {showSolicitation && <Solicitation onClose={handleSolicitation} showModal={showSolicitation} datas={user} />}
       <div className="sm:px-7 sm:pt-7 px-4 pt-4 flex flex-col w-full border-b border-gray-800 bg-primary text-primary sticky top-0">
         <div className="flex w-full items-center">
           <div className="flex items-center text-3xl text-primary">
@@ -230,7 +242,7 @@ export function Center({ user,idCompany }) {
           <tbody className="text-primary">
             {dataLine && dataLine.map((clear) => {
               return (
-                <Line clean={clear} key={clear.id} idCompany={idCompany}/>
+                <Line clean={clear} key={clear.id} idCompany={idCompany} />
               )
             })}
           </tbody>
