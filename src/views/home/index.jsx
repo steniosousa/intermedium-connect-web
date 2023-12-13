@@ -26,6 +26,7 @@ export default function Home() {
   const [filterUser, setFilterUser] = useState('')
   const [openPerfil, setOpenPerfil] = useState(false)
   const [companies, setCompanies] = useState([])
+  const [companieSelect, setCompanieSelect] = useState('Intermedium')
   const [companieIdSelect, setCompanieIdSelect] = useState('')
   const updateWindowSize = () => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -69,14 +70,11 @@ export default function Home() {
     }
   }
 
-  async function getUsersForCompany() {
-    if (companieIdSelect == '') {
-      setUserSelected(null)
-      getDatas()
-      return
-    }
+  async function getUsersForCompany(event) {
+    setCompanieSelect(event.target.options[event.target.selectedIndex].text)
+    setCompanieIdSelect(event.target.value)
     try {
-      const getUsersForCompany = await Api.get('/user/recover', { params: { companyId: companieIdSelect } })
+      const getUsersForCompany = await Api.get('/user/recover', { params: { companyId: event.target.value } })
       setUserSelected(null)
       setUsers(getUsersForCompany.data)
     } catch (error) {
@@ -91,9 +89,7 @@ export default function Home() {
       })
     }
   }
-  useEffect(() => {
-    getUsersForCompany()
-  }, [companieIdSelect])
+
 
   async function handleConfig() {
     if (companieIdSelect == '') {
@@ -115,17 +111,7 @@ export default function Home() {
     setOpenPerfil(!openPerfil)
   }
 
-  useEffect(() => {
-    if (users == 'Sem usuários') return
-    const filteredUsers = users.filter((item) =>
-      console.log(item)
-    );
-    if (filteredUsers.length > 0) {
-      setUserWithFilter(filteredUsers)
-    } else {
-      setUserWithFilter(users)
-    }
-  }, [filterUser, users])
+
 
   async function editPass() {
     if (adminObj.firstAcess) {
@@ -144,9 +130,6 @@ export default function Home() {
       setOpenPerfil(true)
     }
   }
-  useEffect(() => {
-    editPass()
-  }, [])
 
   function handleLogin() {
     localStorage.clear()
@@ -154,6 +137,22 @@ export default function Home() {
   }
 
 
+
+  useEffect(() => {
+    if (users == 'Sem usuários') return
+    const filteredUsers = users.filter((item) =>
+      console.log(item)
+    );
+    if (filteredUsers.length > 0) {
+      setUserWithFilter(filteredUsers)
+    } else {
+      setUserWithFilter(users)
+    }
+  }, [filterUser, users])
+
+  useEffect(() => {
+    editPass()
+  }, [])
 
   useEffect(() => { getDatas() }, [])
   return (
@@ -192,8 +191,9 @@ export default function Home() {
         </div>
         <div className="flex-grow overflow-hidden h-full flex flex-col">
           <div className="h-16 lg:flex w-full border-b border-gray-800 hidden px-10">
-            <div className="flex h-full">
-              < button className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8 text-lg text-primary">Intermedium</button>
+            <div className="flex flex-row align-center items-center justify-around gap-4">
+                <p>Empresa:  </p>
+              <h1 className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8 text-lg text-primary font-semibold">{companieSelect}</h1>
             </div>
 
             <div className="ml-auto bg-primary text-primary flex items-center space-x-7">
@@ -232,7 +232,6 @@ export default function Home() {
               ) : (
                 <div className="text-xs bg-primary text-primary tracking-wider">Usuários cadastrados: {users.length}</div>
               )}
-
               <div className="relative mt-2">
                 <input onChange={(e) => setFilterUser(e.target.value)} type="text" className="pl-8 h-9 bg-transparent border border-gray-500 text-primary w-full rounded-md text-sm" placeholder="Pesquisar Usúario" />
                 <svg viewBox="0 0 24 24" className="w-4 absolute text-primary top-1/2 transform translate-x-0.5 -translate-y-1/2 left-2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -241,7 +240,7 @@ export default function Home() {
                 </svg>
               </div>
               <div class="flex">
-                <select onChange={(i) => setCompanieIdSelect(i.target.value)} id="states" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg border-s-gray-100 dark:border-s-gray-700 border-s-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <select onChange={getUsersForCompany} id="states" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg border-s-gray-100 dark:border-s-gray-700 border-s-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                   <option selected value=''>Filtre por empresa</option>
                   {companies.map((item) => {
                     return (
@@ -266,13 +265,13 @@ export default function Home() {
                 ) : null}
                 {userWithFilter && companieIdSelect != '' && userWithFilter.map((user) => {
                   return (
-                    <User hash={user.loginHash} name={user.name} onRedirect={setUserSelected} user={user} key={user.id} idCompany={companieIdSelect} />
+                    <User hash={user.loginHash} name={user.name} onRedirect={setUserSelected} user={user} key={user.id}  />
                   )
                 })}
               </div>
             </div>
 
-            {userSelected ? <Center user={userSelected} /> : null}
+            {userSelected ? <Center user={userSelected} idCompany={companieIdSelect}/> : null}
           </div>
         </div>
       </ThemeProvider>

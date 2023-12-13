@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'
 import Select from 'react-select'
 import Api from '../../../api/service';
 
-export default function Avaliation({ showModal, onClose, companyId }) {
+export default function Avaliation({ showModal, onClose, companyId, idCompany}) {
     const adminObj = JSON.parse(localStorage.getItem('manager'))
     const [avaliate, setAvaliate] = useState({})
     const [epis, setEpis] = useState([])
@@ -20,7 +20,7 @@ export default function Avaliation({ showModal, onClose, companyId }) {
     async function retriveDatas() {
 
         try {
-            const { data } = await Api.get('/epis/recover', { params: { companyId: adminObj.companyId } })
+            const { data } = await Api.get('/epis/recover', { params: { companyId: idCompany} })
             const optionsEquipaments = data.map((item) => {
                 return {
                     value: item.id,
@@ -28,7 +28,7 @@ export default function Avaliation({ showModal, onClose, companyId }) {
                 }
             })
             setAllEpis(optionsEquipaments)
-        } catch {
+        } catch (error) {
             await Swal.fire({
                 icon: 'error',
                 title: "Erro ao recuperar Epis",
@@ -63,8 +63,9 @@ export default function Avaliation({ showModal, onClose, companyId }) {
                 confirmButtonText: 'Confirmar'
             })
         }
+        console.log(companyId)
         const send = {
-            scheduleId: companyId,
+            scheduleId: companyId.id,
             status: avaliate.value,
             managerId: adminObj.id,
             episId: epis.map((item) => item.value)

@@ -1,27 +1,13 @@
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Informations from "../Informations";
 import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 
-export default function Line({ clean }) {
-  const [allEvidence, setAllEvidence] = useState(0)
+export default function Line({ clean,idCompany }) {
   const [showModal, setShowModal] = useState(false);
-
-
   const startDate = format(new Date(clean.createdAt), 'dd/MM/yyyy HH:mm');
   const finishDate = format(new Date(clean.updatedAt), 'dd/MM/yyyy HH:mm');
-  function countEvidences() {
-    let countEvidence = []
-    let valuesToPush = [clean.entrance, clean.exit, clean.obs1, clean.obs2, clean.obs3].filter(value => value !== null && value !== undefined);
-
-    countEvidence.push(...valuesToPush);
-    setAllEvidence(countEvidence.length);
-  }
-  useEffect(() => {
-
-    countEvidences()
-  }, [])
 
   async function handleToggleModal() {
     setShowModal(!showModal);
@@ -32,7 +18,7 @@ export default function Line({ clean }) {
   }
   return (
     <tr>
-      {showModal && <Informations onClose={handleToggleModal} showModal={showModal} datas={clean} />}
+      {showModal && <Informations onClose={handleToggleModal} showModal={showModal} datas={clean} idCompany={idCompany}/>}
       <td className="sm:p-3 py-2 px-1 border-b border-gray-800">
         <div className="flex items-center">
 
@@ -52,7 +38,7 @@ export default function Line({ clean }) {
         <td className="sm:p-3 py-2 px-1 border-b border-gray-800 md:table-cell hidden text-green-500" >{clean.status}</td>
 
       )}
-      <td className="sm:p-3 py-2 px-1 border-b border-gray-800 text-green-500"> {allEvidence}</td>
+      <td className="sm:p-3 py-2 px-1 border-b border-gray-800 text-green-500"> {clean.evidences.length}</td>
       <td className="sm:p-3 py-2 px-1 border-b border-gray-800">
         <div className="flex items-center justify-between">
           <div className="sm:flex hidden flex-col">
@@ -84,7 +70,7 @@ export default function Line({ clean }) {
                   <Menu.Item>
                     {({ active }) => (
                       <span
-                        
+
                         onClick={() => handleToggleModal()}
                         className={classNames(
                           active ? 'bg-gray-100 text-primary' : 'text-gray-700',

@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import suposicao from './download.jpeg'
 import Avaliation from './avaliation';
 
-export default function Informations({ showModal, onClose, datas }) {
+export default function Informations({ showModal, onClose, datas,idCompany }) {
   const [avaliation, setAvaliation] = useState(false)
   const handleClose = () => {
     onClose();
@@ -16,6 +16,16 @@ export default function Informations({ showModal, onClose, datas }) {
   async function handleExclusion() {
     try {
       await Api.post('cleaning/delete', { id: datas.id })
+      const confirm = await Swal.fire({
+        icon: 'info',
+        title: 'Deseja deletar evidencia?',
+        showDenyButton: true,
+        showCancelButton: false,
+        showConfirmButton: true,
+        denyButtonText: 'Cancelar',
+        confirmButtonText: 'Confirmar'
+      })
+      if (!confirm.isConfirmed) return
       await Swal.fire({
         icon: 'success',
         title: 'Limpeza deletada com sucesso',
@@ -38,18 +48,17 @@ export default function Informations({ showModal, onClose, datas }) {
     }
   }
 
-  async function reopen() {
-    console.log(datas)
-    await Swal.fire({
-      icon: 'info',
-      title: 'Ao rebrir marcará para o horário atual a nova solicitação',
-      showDenyButton: true,
-      showCancelButton: false,
-      showConfirmButton: true,
-      denyButtonText: 'Cancelar',
-      confirmButtonText: 'Reabrir'
-    })
-  }
+  // async function reopen() {
+  //   await Swal.fire({
+  //     icon: 'info',
+  //     title: 'Ao rebrir marcará para o horário atual a nova solicitação',
+  //     showDenyButton: true,
+  //     showCancelButton: false,
+  //     showConfirmButton: true,
+  //     denyButtonText: 'Cancelar',
+  //     confirmButtonText: 'Reabrir'
+  //   })
+  // }
 
   function openAvaliation() {
     setAvaliation(!avaliation)
@@ -94,36 +103,16 @@ export default function Informations({ showModal, onClose, datas }) {
                 <div className="container mx-auto px-5 py-2 lg:px-32 lg:pt-24 ">
                   <div className="-m-1 flex flex-wrap md:-m-2">
                     <div className="flex w-2/1 flex-row">
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.entrance ? datas.entrance : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.exit ? datas.exit : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs1 ? datas.obs1 : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs2 ? datas.obs2 : suposicao} />
-                      </div>
-                      <div className="w-1/2 p-1 md:p-2">
-                        <img
-                          alt="gallery"
-                          className="block h-full w-full rounded-lg object-cover object-center"
-                          src={datas.obs3 ? datas.obs3 : suposicao} />
-                      </div>
+                      {datas.evidences.map((item) => {
+                        return (
+                          <div className="w-1/2 p-1 md:p-2">
+                            <img
+                              alt="gallery"
+                              className="block h-full w-full rounded-lg object-cover object-center"
+                              src={item.evidenceUrl} />
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 </div>
@@ -145,7 +134,6 @@ export default function Informations({ showModal, onClose, datas }) {
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Objetos</dt>
                         {datas.ObjectOfCleaning.map((item) => {
-                          console.log(item)
                           return (
                             <dd className="mt-2 text-sm text-white">{item.object.name}</dd>
 
@@ -163,11 +151,11 @@ export default function Informations({ showModal, onClose, datas }) {
                   </div>
                 </div>
                 <button onClick={() => handleExclusion()} className="h-8 px-3 rounded-md shadow text-white bg-red-500 m-4">Excluir</button>
-                <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={reopen}>Limpar Novamente</button>
+                {/* <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={reopen}>Limpar Novamente</button> */}
                 {!datas.avaliationId && datas.status == "CONCLUIDO" ? (
                   <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={openAvaliation}>Avaliação</button>
                 ) : null}
-                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} companyId={datas.id} />}
+                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} companyId={datas} idCompany={idCompany}/>}
               </Dialog.Panel>
             </Transition.Child>
           </div>

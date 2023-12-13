@@ -1,4 +1,4 @@
-export function User({ name, hash,  onRedirect, user, idCompany }) {
+export function User({ name, hash,  onRedirect, user }) {
 
  
   function redirect() {

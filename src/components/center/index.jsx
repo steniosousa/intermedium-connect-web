@@ -8,7 +8,7 @@ import 'jspdf-autotable';
 import Swal from 'sweetalert2'
 
 
-export function Center({ user }) {
+export function Center({ user,idCompany }) {
   const [showSolicitation, setShowSolicitation] = useState(false);
   const [copy, setCopy] = useState('Copiar')
   const [dataLine, setDataLine] = useState([])
@@ -230,7 +230,7 @@ export function Center({ user }) {
           <tbody className="text-primary">
             {dataLine && dataLine.map((clear) => {
               return (
-                <Line clean={clear} key={clear.id} />
+                <Line clean={clear} key={clear.id} idCompany={idCompany}/>
               )
             })}
           </tbody>

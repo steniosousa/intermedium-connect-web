@@ -29,7 +29,6 @@ export default function Modal({ closeModal, userId }) {
             })
         }
         catch (error) {
-            console.log(error)
         }
     }
 
