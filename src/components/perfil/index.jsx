@@ -191,7 +191,7 @@ export default function Perfil({ showModal, onClose, admin }) {
                                         </div>
                                         <div class="w-full px-3 relative">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                                                Password
+                                                Senha
                                             </label>
                                             <input type={(passwordEye === false && newPass != '' && newPass) ? 'password' : 'text'} onChange={(i) => setNewPass(i.target.value)} class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" />
                                             <div className='text-2xl absolute top-9 right-7'>

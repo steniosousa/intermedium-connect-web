@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 import suposicao from './download.jpeg'
 import Avaliation from './avaliation';
 
-export default function Informations({ showModal, onClose, datas,idCompany }) {
+export default function Informations({ showModal, onClose, datas, idCompany }) {
   const [avaliation, setAvaliation] = useState(false)
   const handleClose = () => {
     onClose();
@@ -105,7 +105,7 @@ export default function Informations({ showModal, onClose, datas,idCompany }) {
                     <div className="flex w-2/1 flex-row">
                       {datas.evidences.map((item) => {
                         return (
-                          <div className="w-1/2 p-1 md:p-2">
+                          <div className="w-1/2 p-1 md:p-2" key={Math.random()}>
                             <img
                               alt="gallery"
                               className="block h-full w-full rounded-lg object-cover object-center"
@@ -132,21 +132,17 @@ export default function Informations({ showModal, onClose, datas,idCompany }) {
                         <dd className="mt-2 text-sm text-white">{format(new Date(datas.updatedAt), 'dd/MM/yyyy HH:mm')}</dd>
                       </div>
                       <div className="border-t border-gray-200 pt-4">
-                        <dt className="font-medium text-gray-900">Objetos</dt>
+                        <p className="font-medium text-gray-900">Objetos</p>
                         {datas.ObjectOfCleaning.map((item) => {
                           return (
-                            <dd className="mt-2 text-sm text-white">{item.object.name}</dd>
-
+                            <p key={Math.random()} className="mt-2 text-sm text-white">{item.object.name}</p>
                           )
                         })}
                       </div>
                       <div className="border-t border-gray-200 pt-4">
                         <dt className="font-medium text-gray-900">Ambiente</dt>
                         <dd className="mt-2 text-sm text-white">{datas.Place.name} </dd>
-
                       </div>
-
-
                     </dl>
                   </div>
                 </div>
@@ -155,7 +151,7 @@ export default function Informations({ showModal, onClose, datas,idCompany }) {
                 {!datas.avaliationId && datas.status == "CONCLUIDO" ? (
                   <button className="h-8 px-3 rounded-md shadow text-white bg-orange-500 m-4" onClick={openAvaliation}>Avaliação</button>
                 ) : null}
-                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} companyId={datas} idCompany={idCompany}/>}
+                {avaliation && <Avaliation showModal={avaliation} onClose={openAvaliation} companyId={datas} idCompany={idCompany} />}
               </Dialog.Panel>
             </Transition.Child>
           </div>

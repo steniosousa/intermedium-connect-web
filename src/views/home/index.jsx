@@ -71,6 +71,7 @@ export default function Home() {
   }
 
   async function getUsersForCompany(event) {
+    if (event.target.value == '') return
     setCompanieSelect(event.target.options[event.target.selectedIndex].text)
     setCompanieIdSelect(event.target.value)
     try {
@@ -98,8 +99,8 @@ export default function Home() {
         title: 'Selecione a empresa que deseja configurar',
         showDenyButton: true,
         showCancelButton: false,
-        showConfirmButton: true,
-        denyButtonText: 'Cancelar',
+        showConfirmButton: false,
+        denyButtonText: 'Ok',
         confirmButtonText: 'Confirmar'
       })
       return
@@ -119,7 +120,7 @@ export default function Home() {
         icon: 'info',
         title: 'Faça alteração da sua senha para uma senha permanente',
         html: `
-        <p>Caso não haja alteração de sua sua conta será desativada dentro de 24h</p>`,
+        <p>Mantenha sua conta mais segura</p>`,
         showDenyButton: true,
         showCancelButton: false,
         showConfirmButton: true,
@@ -137,18 +138,17 @@ export default function Home() {
   }
 
 
-
   useEffect(() => {
-    if (users == 'Sem usuários') return
+    if (users === 'Sem usuários') return;
     const filteredUsers = users.filter((item) =>
-      console.log(item)
+      item.name.toLowerCase().includes(filterUser.toLowerCase())
     );
     if (filteredUsers.length > 0) {
-      setUserWithFilter(filteredUsers)
+      setUserWithFilter(filteredUsers);
     } else {
-      setUserWithFilter(users)
+      setUserWithFilter(users);
     }
-  }, [filterUser, users])
+  }, [filterUser, users]);
 
   useEffect(() => {
     editPass()
@@ -192,7 +192,7 @@ export default function Home() {
         <div className="flex-grow overflow-hidden h-full flex flex-col">
           <div className="h-16 lg:flex w-full border-b border-gray-800 hidden px-10">
             <div className="flex flex-row align-center items-center justify-around gap-4">
-                <p>Empresa:  </p>
+              <p>Empresa:  </p>
               <h1 className="cursor-pointer h-full border-b-2 border-transparent inline-flex items-center mr-8 text-lg text-primary font-semibold">{companieSelect}</h1>
             </div>
 
@@ -206,7 +206,7 @@ export default function Home() {
                 </span>
                 <div className="flex flex-col align-left justify-left m-4">
                   <span className="ml-2" >{adminObj.name}</span>
-                  <span>{adminObj.role}</span>
+                  <span>{adminObj.role == 'ADMIN' ? 'Administrador' : 'Gerente'}</span>
                 </div>
                 <svg viewBox="0 0 24 24" className="w-4 ml-1 flex-shrink-0" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
@@ -239,12 +239,12 @@ export default function Home() {
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
               </div>
-              <div class="flex">
-                <select onChange={getUsersForCompany} id="states" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg border-s-gray-100 dark:border-s-gray-700 border-s-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                  <option selected value=''>Filtre por empresa</option>
+              <div className="flex">
+                <select onChange={getUsersForCompany} id="states" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-e-lg border-s-gray-100 dark:border-s-gray-700 border-s-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <option defaultValue value=''>Filtre por empresa</option>
                   {companies.map((item) => {
                     return (
-                      <option value={item.company.id}>{item.company.name}</option>
+                      <option value={item.company.id} key={Math.random()}>{item.company.name}</option>
                     )
                   })}
                 </select>
@@ -265,13 +265,13 @@ export default function Home() {
                 ) : null}
                 {userWithFilter && companieIdSelect != '' && userWithFilter.map((user) => {
                   return (
-                    <User hash={user.loginHash} name={user.name} onRedirect={setUserSelected} user={user} key={user.id}  />
+                    <User key={Math.random()} hash={user.loginHash} name={user.name} onRedirect={setUserSelected} user={user}  />
                   )
                 })}
               </div>
             </div>
 
-            {userSelected ? <Center user={userSelected} idCompany={companieIdSelect}/> : null}
+            {userSelected ? <Center user={userSelected} idCompany={companieIdSelect} /> : null}
           </div>
         </div>
       </ThemeProvider>

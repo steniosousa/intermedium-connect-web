@@ -56,6 +56,7 @@ export default function Config({ showModal, onClose, companyId }) {
 
 
   async function retriveDatas() {
+    const user = localStorage.getItem('manager')
     setLoading(true)
     try {
       const [object, place, users, company, epi, managers] = await Promise.all([
@@ -72,7 +73,7 @@ export default function Config({ showModal, onClose, companyId }) {
       setPlaces(place.data)
       setUsers(users.data)
       const companies = company.data.map((item) => {
-        return { label: item.name, value: item.id }
+        return { name: item.name, value: item.id }
       })
       setCompanys(companies)
       setAdmins(managers.data)
@@ -138,15 +139,17 @@ export default function Config({ showModal, onClose, companyId }) {
           denyButtonText: 'Cancelar',
           confirmButtonText: 'Confirmar'
         })
+        setLoading(false)
         await retriveDatas()
       } catch (error) {
+        setLoading(false)
         await Swal.fire({
           icon: 'error',
-          title: 'Não foi possível deletar',
+          title: error.response.data.message == 'Error - User with a schedule in progress' ? 'Erro - Usuário com agendamento em andamento' : 'Erro - Item selecionado em uso',
           showDenyButton: true,
           showCancelButton: false,
-          showConfirmButton: true,
-          denyButtonText: 'Cancelar',
+          showConfirmButton: false,
+          denyButtonText: 'ok',
           confirmButtonText: 'Confirmar'
         })
       }
@@ -229,6 +232,8 @@ export default function Config({ showModal, onClose, companyId }) {
       })
     }
     catch (error) {
+      setLoading(false)
+
       await Swal.fire({
         icon: 'error',
         title: 'Erro ao efetuar criação',
@@ -238,7 +243,6 @@ export default function Config({ showModal, onClose, companyId }) {
         denyButtonText: 'Cancelar',
         confirmButtonText: 'Confirmar'
       })
-      setLoading(false)
 
     }
 
@@ -257,7 +261,9 @@ export default function Config({ showModal, onClose, companyId }) {
 
   useEffect(() => {
     retriveDatas()
-  }, [route])
+  }, [route,fixObj,usersEdit])
+
+
 
   return (
     <Transition.Root show={showModal} as={Fragment}>
@@ -293,7 +299,7 @@ export default function Config({ showModal, onClose, companyId }) {
                 {create ? (
                   <div className='my-20 align-center flex flex-col justify-center'>
                     <label for="countries" class="block mb-2 text-sm font-medium text-primary">Criação de:</label>
-                    <select selected onChange={(value) => setSelectArgFromCreate(value.target.value)} id="countries" class="m-3 bg-tertiary border border-gray-300 outline-transparent text-secondary text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 align-center self-center">
+                    <select defaultValue onChange={(value) => setSelectArgFromCreate(value.target.value)} id="countries" class="m-3 bg-tertiary border border-gray-300 outline-transparent text-secondary text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 align-center self-center">
                       <option hidden  >Clique e Selecione Uma Opção</option>
                       <option value="objects">Objetos</option>
                       <option value="place">Ambientes</option>
@@ -306,6 +312,7 @@ export default function Config({ showModal, onClose, companyId }) {
                     {selectArgFromCreate == 'manager' && adminObj.role == 'ADMIN' ? (
                       <>
                         <Select
+
                           isMulti
                           name="Empresas"
                           options={companys}
@@ -373,34 +380,37 @@ export default function Config({ showModal, onClose, companyId }) {
                           </svg>
                         </button>
                       </div>
-                      <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-                        <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-primary md:flex-row md:space-x-8 md:mt-0 md:border-0">
-                          <li >
-                            <a href="#" className="block py-2 pl-3 pr-4 text-primary bg-violet-500 rounded md:bg-transparent md:text-quinary md:p-0" aria-current="page">CONFIGURAÇÕES</a>
-                          </li>
-                          <li onClick={() => handleSelect(users, 'user')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0" aria-current="page">Usuários</a>
-                          </li>
-                          <li onClick={() => handleSelect(objects, 'objects')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Objetos</a>
-                          </li>
-                          <li onClick={() => handleSelect(places, 'place')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Ambientes</a>
-                          </li>
-                          <li onClick={() => handleSelect(companys, 'companies')}>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Empresas</a>
-                          </li>
-                          <li onClick={() => handleSelect(epis, 'epis')}>
-                            <a class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">EPIs</a>
-                          </li>
-                          <li >
-                            <a href="#" className="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Administradores</a>
-                          </li>
-                        </ul>
-                      </div>
+                      {!usersEdit ? (
+
+                        <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+                          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-primary md:flex-row md:space-x-8 md:mt-0 md:border-0">
+                            <li >
+                              <a href="#" className="block py-2 pl-3 pr-4 text-primary bg-violet-500 rounded md:bg-transparent md:text-quinary md:p-0" aria-current="page">CONFIGURAÇÕES</a>
+                            </li>
+                            <li onClick={() => handleSelect(users, 'user')}>
+                              <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0" aria-current="page">Usuários</a>
+                            </li>
+                            <li onClick={() => handleSelect(objects, 'objects')}>
+                              <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Objetos</a>
+                            </li>
+                            <li onClick={() => handleSelect(places, 'place')}>
+                              <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Ambientes</a>
+                            </li>
+                            <li onClick={() => handleSelect(companys, 'companies')}>
+                              <a href="#" class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Empresas</a>
+                            </li>
+                            <li onClick={() => handleSelect(epis, 'epis')}>
+                              <a class="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">EPIs</a>
+                            </li>
+                            <li >
+                              <a href="#" className="block py-2 pl-3 pr-4 text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-quinary md:p-0">Administradores</a>
+                            </li>
+                          </ul>
+                        </div>
+                      ) : null}
                     </div>
                   </nav>
-                  {usersEdit && <Modal userId={check} closeModal={() => {
+                  {usersEdit && <Modal id={check} route={route} companyId={companyId} closeModal={() => {
                     setUsersEdit(false)
                   }} />}
                   <div className='flex flex-row my-8 justify-between w-full '>
@@ -424,10 +434,8 @@ export default function Config({ showModal, onClose, companyId }) {
                         )}
                       </div>
                     ) : null}
-
-
-                    <div>
-                      <table className="text-sm text-left text-secondary">
+                    <div >
+                      <table className="text-sm text-left text-secondary min-w-4/3">
                         {fixObj.length != 0 ? (
                           <thead className="text-xs text-secondary uppercase bg-tertiary">
                             <tr>
@@ -435,17 +443,11 @@ export default function Config({ showModal, onClose, companyId }) {
                                 Nome
                               </th>
                               <th scope="col" className="px-6 py-3">
-                                HASH
-                              </th>
-                              <th scope="col" className="px-6 py-3">
-                                POSIÇÃO
-                              </th>
-                              <th scope="col" className="px-6 py-3">
-
+                                Selecione
                               </th>
                             </tr>
                           </thead>
-                        ) : (
+                        ) : usersEdit ? null : (
                           <thead className="text-xs text-secondary uppercase bg-tertiary">
                             <tr>
                               <th scope="col" className="px-6 py-3">
@@ -454,29 +456,21 @@ export default function Config({ showModal, onClose, companyId }) {
                             </tr>
                           </thead>
                         )}
-
-
                         <tbody>
                           {fixObj.map((item) => {
                             return (
-                              <tr className="bg-tertiary border-b py-6">
+                              <tr className="bg-tertiary border-b py-6 ">
                                 <th scope="row" className="px-6 py-4 font-medium text-secondary whitespace-nowrap">
                                   {item.name}
                                 </th>
-                                <td className="px-6 py-4">
-                                  {item.hash}
-                                </td>
-                                <td className="px-6 py-4">
-                                  {item.role}
-                                </td>
-                                <td>
+                                <td className='flex  items-center justify-center mt-4'>
                                   {
                                     check.includes(item.id) ? (
                                       <div
                                         role="checkbox"
                                         aria-checked="true"
                                         onClick={() => handleSelectForEditOrDeletion(item.id)}
-                                        className='text-violet-500 font-2x1 cursor-pointer'
+                                        className='text-red-500 font-lg cursor-pointer'
                                       >
                                         &#x2713;
                                       </div>
@@ -485,8 +479,9 @@ export default function Config({ showModal, onClose, companyId }) {
                                         role="checkbox"
                                         aria-checked="false"
                                         onClick={() => handleSelectForEditOrDeletion(item.id)}
-                                        className="w-4 h-4 cursor-pointer bg-primary border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                        className="w-4 h-4 cursor-pointer bg-primary border-gray-300  focus:ring-blue-500 focus:ring-2"
                                       >
+
                                       </div>
                                     )
                                   }

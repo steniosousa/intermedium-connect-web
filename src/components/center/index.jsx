@@ -212,7 +212,7 @@ export function Center({ user, idCompany }) {
         <div className="flex w-full items-center mb-7 justify-between">
           <div>
             <select id="countries" onChange={(item) => filterCleaning(item.target.value)} className=" border border-transparent  text-white bg-quaternary outline-transparent text-sm rounded-lg block w-full p-2.5">
-              <option value={'ALL'} selected>Tudo</option>
+              <option value={'ALL'} defaultValue>Tudo</option>
               <option value="PENDENTE">Pendente</option>
               <option value="ASSUMIDO">Assumido</option>
               <option value="CONCLUIDO">Concluído</option>

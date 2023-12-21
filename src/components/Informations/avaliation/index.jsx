@@ -63,7 +63,6 @@ export default function Avaliation({ showModal, onClose, companyId, idCompany}) 
                 confirmButtonText: 'Confirmar'
             })
         }
-        console.log(companyId)
         const send = {
             scheduleId: companyId.id,
             status: avaliate.value,
