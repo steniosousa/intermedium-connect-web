@@ -73,7 +73,7 @@ export default function Config({ showModal, onClose, companyId }) {
       setPlaces(place.data)
       setUsers(users.data)
       const companies = company.data.map((item) => {
-        return { name: item.name, value: item.id }
+        return { label: item.name, value: item.id }
       })
       setCompanys(companies)
       setAdmins(managers.data)
@@ -167,7 +167,7 @@ export default function Config({ showModal, onClose, companyId }) {
     datas.map((item) => {
       let obj = {};
       obj['id'] = item.id;
-      obj['name'] = item.name || '';
+      obj['name'] = item.name || item.label;
       obj['hash'] = item.loginHash || ''
       obj['role'] = item.role || ''
       setFixObj((oldstate) => [...oldstate, obj])
@@ -312,7 +312,6 @@ export default function Config({ showModal, onClose, companyId }) {
                     {selectArgFromCreate == 'manager' && adminObj.role == 'ADMIN' ? (
                       <>
                         <Select
-
                           isMulti
                           name="Empresas"
                           options={companys}
