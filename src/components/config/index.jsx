@@ -204,12 +204,20 @@ export default function Config({ showModal, onClose, companyId }) {
 
       return
     }
-    const companiesSelected = comapnyForNewManager.pop().map((item) => { return item.value })
-    const permissionsSelected = selectPermissions.pop().map((item) => { return item.value })
+    let companiesSelected;
+    let permissionsSelected;
+    if (comapnyForNewManager && comapnyForNewManager.length > 0 ) {
+      console.log(comapnyForNewManager)
+      companiesSelected = comapnyForNewManager.pop().map((item) => { return item.value })
+
+    } if (selectPermissions && selectPermissions.length > 0 ) {
+      permissionsSelected = selectPermissions.pop().map((item) => { return item.value })
+
+    }
     const send = {
       companyId: selectArgFromCreate == "manager" ? companiesSelected : companyId,
       permissions: selectArgFromCreate == "manager" ? permissionsSelected : [''],
-      role:selectArgFromCreate == "manager" ? selectRoles.value : [''],
+      role: selectArgFromCreate == "manager" ? selectRoles.value : [''],
       name: nameOfCreation,
       email: emailOfCreation
     }
@@ -318,7 +326,7 @@ export default function Config({ showModal, onClose, companyId }) {
                           classNamePrefix="Inserir empresas"
                           placeholder="Inserir empresas"
                         />
-                         <Select
+                        <Select
                           name="Posição"
                           options={roles}
                           onChange={(item) => setSelectRoles(item)}
