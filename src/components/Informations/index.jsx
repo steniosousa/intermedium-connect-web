@@ -55,6 +55,9 @@ export default function Informations({ showModal, onClose, datas }) {
     setAvaliation(!avaliation)
   }
 
+  useEffect(() => {
+    console.log(datas)
+  }, [])
 
   return (
     <Transition.Root show={showModal} as={Fragment}>
@@ -93,11 +96,12 @@ export default function Informations({ showModal, onClose, datas }) {
                 </div>
                 <div className="flex flex-row w-full gap-4">
                   {datas.evidences.map((item) => {
+                    console.log(item.evidenceUrl)
                     return (
                       <img
                         alt="gallery"
-                        className="block h-full w-full rounded-lg object-cover object-center"
-                        src={item.evidenceUrl} key={item.evidenceUrl} />
+                        className="block h-1/5 w-1/5 rounded-lg object-cover object-center"
+                        src={`data:image/jpeg;base64,${item.evidenceUrl}`} key={item.evidenceUrl} />
                     )
                   })}
                 </div>

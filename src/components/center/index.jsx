@@ -222,7 +222,7 @@ export function Center({ user }) {
 
           <thead>
             <tr className="text-gray-400">
-              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Início</th>
+              <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Data da solicitação</th>
               <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Ambiente</th>
               <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800 hidden md:table-cell">Status</th>
               <th className="font-normal px-3 pt-0 pb-3 border-b border-gray-200 dark:border-gray-800">Evidencias</th>
